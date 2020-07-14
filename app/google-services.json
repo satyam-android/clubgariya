@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "526393901980",
+    "firebase_url": "https://clubgariya.firebaseio.com",
+    "project_id": "clubgariya",
+    "storage_bucket": "clubgariya.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:526393901980:android:d5b9ea6423cbfeef22fe59",
+        "android_client_info": {
+          "package_name": "com.satyam.clubgariya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "526393901980-9f1cb1mj7jca2hqaslre5h7urjpnonsb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.satyam.clubgariya",
+            "certificate_hash": "4cbb4651016962a0b17b7b8bdecb27ac392bce03"
+          }
+        },
+        {
+          "client_id": "526393901980-5ro6m1b4oi3kt2n0db2q1lapdvcbk6oh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCo3R2DI-UkQVgVXQood24hVFsITU5OTOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "526393901980-5ro6m1b4oi3kt2n0db2q1lapdvcbk6oh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="register"
+            type="com.satyam.clubgariya.viewmodels.RegisterFragViewModal" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:fillViewport="true"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="Welcome To The Club"
+                android:layout_width="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/iv_profile_picture"
+                android:layout_marginTop="20dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/profile"
+                />
+            <EditText
+                android:layout_marginTop="30dp"
+                android:id="@+id/et_first_name"
+                android:text="@={register.fName}"
+                android:hint="First Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+            <androidx.appcompat.widget.AppCompatEditText
+                android:layout_marginTop="30dp"
+                android:id="@+id/et_last_name"
+                android:hint="Last Name"
+                android:text="@={register.lName}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+            <androidx.appcompat.widget.AppCompatEditText
+                android:layout_marginTop="30dp"
+                android:id="@+id/et_mobile"
+                android:hint="Mobile Number"
+                android:text="@={register.mobileNumber}"
+
+                android:inputType="phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+            <androidx.appcompat.widget.AppCompatEditText
+                android:layout_marginTop="30dp"
+                android:id="@+id/et_email"
+                android:text="@={register.email}"
+                android:hint="example@email.com"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_pass"
+                android:inputType="textPassword"
+                android:hint="password"
+                android:text="@={register.password}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/et_email"
+                android:layout_marginTop="20dp"
+
+                />
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_confirm_pass"
+                android:inputType="textPassword"
+                android:hint="confirm password"
+                android:text="@={register.confPassword}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+
+                />
+            <Button
+                android:id="@+id/btn_register"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{register::onRegisterButtonClick}"
+                android:layout_alignBottom="@id/et_pass"
+                android:layout_centerHorizontal="true"
+                android:text="Sign Up"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

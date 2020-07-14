@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="app_bar_height">50dp</dimen>
+    <dimen name="app_bar_title_size">20sp</dimen>
+    <dimen name="border_layout_width">2dp</dimen>
+    <dimen name="blog_item_layout_width">40dp</dimen>
+    <dimen name="blog_item_layout_height">40dp</dimen>
+</resources>

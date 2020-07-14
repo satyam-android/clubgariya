@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ClubGariya</string>
+    <string name="default_notification_chanel_id">ClubGariya</string>
+    <string name="progress_bar_title">Loading Please Wait..</string>
+</resources>
