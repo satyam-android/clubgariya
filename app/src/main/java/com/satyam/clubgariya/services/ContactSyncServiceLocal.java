@@ -15,10 +15,8 @@ import androidx.core.app.JobIntentService;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.satyam.clubgariya.database.AppContactDB;
 import com.satyam.clubgariya.database.tables.AppContact;
@@ -32,7 +30,7 @@ import com.satyam.clubgariya.utils.UtilFunction;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactSyncService extends JobIntentService {
+public class ContactSyncServiceLocal extends JobIntentService {
     private static final String TAG = "ContactSyncService";
     private static final int JOB_ID = 1;
     AppContactDB contactDB;
@@ -42,7 +40,7 @@ public class ContactSyncService extends JobIntentService {
     private int dbAddIndex;
     private  AppContact contact;
     private CountryCodeToPhone countryCodeToPhone;
-    private DocumentReference usersRawContactsReference;
+    private CollectionReference usersRawContactsCollection;
     private CollectionReference usersClubContactsCollection;
 
 
@@ -53,20 +51,19 @@ public class ContactSyncService extends JobIntentService {
     }
 
     public static void enqueueWork(Context context, Intent intent) {
-        enqueueWork(context, ContactSyncService.class, JOB_ID, intent);
+        enqueueWork(context, ContactSyncServiceLocal.class, JOB_ID, intent);
     }
 
 
     private void startContactSync() {
         contactList = new ArrayList<>();
-        usersRawContactsReference=FirebaseObjectHandler.getInstance().getUserRawContactReference(FirebaseObjectHandler.getInstance().getFirebaseAuth().getUid());
+        usersRawContactsCollection=FirebaseObjectHandler.getInstance().getUsersRawContactsCollection();
         usersClubContactsCollection=FirebaseObjectHandler.getInstance().getUsersClubContactsCollection();
         contactDB = AppContactDB.getInstance(getApplicationContext());
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
         AppSharedPreference preference = new AppSharedPreference(getApplicationContext());
-
         if (cur != null) {
             if (preference.getIntegerData(AppConstants.DATABASE_CONTACT_COUNT) < cur.getCount()) {
                 // Contact Added
@@ -75,19 +72,16 @@ public class ContactSyncService extends JobIntentService {
                 dbAddIndex=0;
                 performContactAddition(cur,cr);
                 if(FirebaseObjectHandler.getInstance().getFirebaseAuth().getCurrentUser()!=null)
-                    syncListForClubMember(newContacts);
+                syncListForClubMember(newContacts);
 
             } else if (preference.getIntegerData(AppConstants.DATABASE_CONTACT_COUNT) > cur.getCount()) {
                 //Contact Deleted
-                fetchAllContact(cur,cr);
-                performContactDeletion();
+
+                performContactDeletion(cur,cr);
 
 
             }else if (preference.getIntegerData(AppConstants.DATABASE_CONTACT_COUNT) == cur.getCount()) {
                 //Contact Unchanged
-                newContacts=new ArrayList<>();
-                dbSyncIndex=0;
-                dbAddIndex=0;
                 String today=UtilFunction.getInstance().getDateTime("dd/MM/yyyy");
                 String lastSyncDate=new AppSharedPreference(getApplicationContext()).getStringData(AppConstants.DATABASE_CONTACT_SYNC_DATE);
                 Log.e(TAG, "startContactSync: "+today );
@@ -113,7 +107,7 @@ public class ContactSyncService extends JobIntentService {
     }
 
     public void fetchAllContact(Cursor cur,ContentResolver cr){
-        countryCodeToPhone = new CountryCodeToPhone();
+         countryCodeToPhone = new CountryCodeToPhone();
         if ((cur != null ? cur.getCount() : 0) > 0) {
             while (cur != null && cur.moveToNext()) {
                 String id = cur.getString(
@@ -175,18 +169,19 @@ public class ContactSyncService extends JobIntentService {
 
     public void performContactAddition(Cursor cur,ContentResolver cr){
         fetchAllContact(cur,cr);
-        addContactToDB(contactList);
+        addContactToDB();
 
     }
 
     public void performContactUpdation(Cursor cur,ContentResolver cr){
         fetchAllContact(cur,cr);
-        addContactToDB(contactList);
+        addContactToDB();
 
     }
 
 
-    public void performContactDeletion(){
+    public void performContactDeletion(Cursor cur,ContentResolver cr){
+        fetchAllContact(cur,cr);
         List<AppContact> list=contactDB.appContactDao().getAllContacts();
         for(AppContact dbContact: list){
             boolean dataExist=false;
@@ -202,7 +197,8 @@ public class ContactSyncService extends JobIntentService {
         }
     }
 
- /*   private void addContactToDB() {
+
+    private void addContactToDB() {
         for (AppContact contact : contactList) {
             if (contactDB.appContactDao().checkIfContactExist(contact.mobileNumber)!=0) {
                 AppContact existContact = contactDB.appContactDao().getContactDetail(contact.mobileNumber);
@@ -214,44 +210,6 @@ public class ContactSyncService extends JobIntentService {
 
             }
         }
-    }*/
-    private void addContactToDB(final List<AppContact> listData) {
-        if(listData.size()>dbAddIndex) {
-            final AppContact contact = listData.get(dbAddIndex);
-            if (contactDB.appContactDao().checkIfContactExist(contact.mobileNumber) != 0) {
-//                Log.e(TAG, "Updating Contact" + contact.mobileNumber + " Name " + contact.displayName + "    isCLubMember " + contact.getisClubUser());
-                AppContact existContact = contactDB.appContactDao().getContactDetail(contact.mobileNumber);
-                existContact.setDisplayName(contact.getDisplayName());
-                contactDB.appContactDao().updateContact(existContact);
-                dbAddIndex++;
-                addContactToDB(listData);
-            } else {
-                usersRawContactsReference.collection("Contacts").document(contact.mobileNumber).set(contact).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-//                                Log.e(TAG, "Add Contact Success" + contact.mobileNumber + " Name " + contact.displayName + "    isCLubMember " + contact.getisClubUser());
-                                contactDB.appContactDao().insertContact(contact);
-                                newContacts.add(contact);
-                                dbAddIndex++;
-                                addContactToDB(listData);
-                            }
-                        }).start();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-//                        Log.e(TAG, "Add Contact fail" + contact.mobileNumber + " Name " + contact.displayName + "    isCLubMember " + contact.getisClubUser());
-                        dbAddIndex++;
-                        addContactToDB(listData);
-                    }
-                });
-            }
-        }else{
-            Log.e(TAG, "addContactToDB: DONE" );
-        }
     }
 
     private void syncNewContactWithClubMember(ArrayList<AppContact> list,int index){
@@ -262,7 +220,6 @@ public class ContactSyncService extends JobIntentService {
     private void syncListForClubMember(final List<AppContact> list) {
         if(list.size()>dbSyncIndex) {
             contact = list.get(dbSyncIndex);
-            Log.e(TAG, "sync contact "+contact.mobileNumber+"    Name "+contact.displayName );
             FirebaseObjectHandler.getInstance().getUserCollection().whereEqualTo(AppConstants.FIREBASE_CONTACT_NODE, contact.mobileNumber).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -271,18 +228,18 @@ public class ContactSyncService extends JobIntentService {
                             final UserRegister user=task.getResult().getDocuments().get(0).toObject(UserRegister.class);
                             Log.e(TAG, "Before Updating   Name  " + contact.displayName + "     Mobile   " + contact.mobileNumber + "    IsMember  " + contact.getisClubUser());
                             new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    contact.setisClubUser(true);
-                                    contact.setUid(user.getUid());
-                                    contactDB.appContactDao().updateContact(contact);
-                                    AppContact con=contactDB.appContactDao().getContactDetail(contact.mobileNumber);
-                                    Log.e(TAG, "After Update   Name  " + con.displayName + "     Mobile   " + con.mobileNumber + "    IsMember  " + con.getisClubUser()+"  UID "+con.getUid());
-                                    dbSyncIndex++;
-                                    syncListForClubMember(list);
+                                    @Override
+                                    public void run() {
+                                        contact.setisClubUser(true);
+                                        contact.setUid(user.getUid());
+                                        contactDB.appContactDao().updateContact(contact);
+                                        AppContact con=contactDB.appContactDao().getContactDetail(contact.mobileNumber);
+                                        Log.e(TAG, "After Update   Name  " + con.displayName + "     Mobile   " + con.mobileNumber + "    IsMember  " + con.getisClubUser()+"  UID "+con.getUid());
+                                        dbSyncIndex++;
+                                        syncListForClubMember(list);
 
-                                }
-                            }).start();
+                                    }
+                                }).start();
                         }else {
                             Log.e(TAG, "onComplete: Data Not found"+contact.displayName);
                             dbSyncIndex++;
@@ -293,7 +250,6 @@ public class ContactSyncService extends JobIntentService {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.e(TAG, "onFailure: Data Not found"+contact.displayName);
                     dbSyncIndex++;
                     syncListForClubMember(list);
                 }

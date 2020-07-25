@@ -2,24 +2,40 @@ package com.satyam.clubgariya.modals;
 
 public class UserRegister {
     String imageUrl;
-    String fName;
-    String lName;
+    String name;
     String email;
-    String password;
     String mobile;
     String uid;
+    String creationTime;
+    String fcm_token;
 
     public UserRegister() {
     }
 
-    public UserRegister(String fName, String lName, String email, String password, String mobile,String uid,String imageUrl) {
-        this.fName = fName;
-        this.lName = lName;
+    public UserRegister(String name, String email, String mobile, String uid,String imageUrl, String creationTime,String fcm_token) {
+        this.imageUrl = imageUrl;
+        this.name = name;
         this.email = email;
-        this.password = password;
         this.mobile = mobile;
-        this.uid=uid;
-        this.imageUrl=imageUrl;
+        this.uid = uid;
+        this.creationTime=creationTime;
+        this.fcm_token=fcm_token;
+    }
+
+    public String getFcm_token() {
+        return fcm_token;
+    }
+
+    public void setFcm_token(String fcm_token) {
+        this.fcm_token = fcm_token;
+    }
+
+    public String getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(String creationTime) {
+        this.creationTime = creationTime;
     }
 
     public String getImageUrl() {
@@ -30,28 +46,12 @@ public class UserRegister {
         this.imageUrl = imageUrl;
     }
 
-    public String getUid() {
-        return uid;
+    public String getName() {
+        return name;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getfName() {
-        return fName;
-    }
-
-    public void setfName(String fName) {
-        this.fName = fName;
-    }
-
-    public String getlName() {
-        return lName;
-    }
-
-    public void setlName(String lName) {
-        this.lName = lName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -62,19 +62,19 @@ public class UserRegister {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getMobile() {
         return mobile;
     }
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

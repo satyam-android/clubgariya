@@ -1,6 +1,7 @@
 package com.satyam.clubgariya.ui;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -12,23 +13,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.satyam.clubgariya.R;
-import com.satyam.clubgariya.repositories.ClubBlogRepository;
-import com.satyam.clubgariya.ui.HomeFragment;
-import com.satyam.clubgariya.ui.LoginFragment;
-import com.satyam.clubgariya.utils.AppFragmentManager;
+import com.satyam.clubgariya.database.AppContactDB;
+import com.satyam.clubgariya.utils.UtilFunction;
 import com.satyam.clubgariya.utils.ViewUtils;
+
+import static android.Manifest.permission.READ_CONTACTS;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,PopupMenu.OnMenuItemClickListener {
+    private static final String TAG = "MainActivity";
     RelativeLayout rlAppBar;
     ImageView ivBackArrow;
     ImageView ivLogout;
@@ -70,6 +74,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(currentFragment!=null)
+            currentFragment.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (currentFragment != null)
@@ -83,6 +94,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void hideAppBar() {
         rlAppBar.setVisibility(View.GONE);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(checkReadContactPermission()){
+            UtilFunction.getInstance().startContactSyncAdapter(getBaseContext());
+        }
+    }
+
+    public boolean checkReadContactPermission(){
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), READ_CONTACTS);
+
+        return result== PackageManager.PERMISSION_GRANTED;
     }
 
     public void hideLogoutButton(){
@@ -135,6 +160,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.iv_logout:
                 FirebaseAuth.getInstance().signOut();
                 replaceFragment(LoginFragment.getInstance());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppContactDB.getInstance(getApplicationContext()).appContactDao().deleteContactTable();
+                    }
+                }).start();
                 break;
         }
     }
@@ -144,7 +175,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         popup.setOnMenuItemClickListener(this);
         if(currentFragment instanceof ClubBlogFragment){
             popup.inflate(R.menu.popup_menu_blog);
-        }else if(currentFragment instanceof ChatFragment){
+        }else if(currentFragment instanceof ChatUserListFragment){
+            popup.inflate(R.menu.popup_menu_chat);
+        }else if(currentFragment instanceof EventFragment){
             popup.inflate(R.menu.popup_menu_chat);
         }
         popup.show();
@@ -185,23 +218,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onMenuItemClick(MenuItem item) {
         Toast.makeText(getBaseContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
         switch (item.getItemId()) {
-            case R.id.search_item:
-                // do your code
-                return true;
-            case R.id.upload_item:
-                // do your code
-                return true;
-            case R.id.copy_item:
-                // do your code
-                return true;
-            case R.id.print_item:
-                // do your code
-                return true;
-            case R.id.share_item:
-                // do your code
-                return true;
-            case R.id.bookmark_item:
-                // do your code
+            case R.id.app_settings:
+                replaceFragment(AppSettingsFragment.getInstance());
                 return true;
             default:
 

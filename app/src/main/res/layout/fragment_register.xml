@@ -35,20 +35,12 @@
                 android:layout_height="100dp"
                 android:src="@drawable/profile"
                 />
-            <EditText
-                android:layout_marginTop="30dp"
-                android:id="@+id/et_first_name"
-                android:text="@={register.fName}"
-                android:hint="First Name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
 
-                />
             <androidx.appcompat.widget.AppCompatEditText
                 android:layout_marginTop="30dp"
-                android:id="@+id/et_last_name"
+                android:id="@+id/et_user_name"
                 android:hint="Last Name"
-                android:text="@={register.lName}"
+                android:text="@={register.name}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 

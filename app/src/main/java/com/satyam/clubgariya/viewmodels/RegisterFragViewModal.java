@@ -2,35 +2,39 @@ package com.satyam.clubgariya.viewmodels;
 
 import android.app.Application;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.satyam.clubgariya.callbacks.RegisterViewModelListner;
 import com.satyam.clubgariya.helper.CurrentUserData;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
 import com.satyam.clubgariya.modals.UserRegister;
 import com.satyam.clubgariya.utils.AppConstants;
 import com.satyam.clubgariya.utils.AppSharedPreference;
+import com.satyam.clubgariya.utils.UtilFunction;
 
 public class RegisterFragViewModal extends AndroidViewModel {
     private static final String TAG = "RegisterFragViewModal";
 
-    public String fName;
-    public String lName;
+    public String name;
     public String email;
     public String password;
     public String confPassword;
     public String mobileNumber;
     public RegisterViewModelListner listner;
-    public String fNameError;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore rootNode;
     private CollectionReference collectionReferenceUsers;
@@ -40,21 +44,7 @@ public class RegisterFragViewModal extends AndroidViewModel {
         super(application);
     }
 
-    public String getfName() {
-        return fName;
-    }
 
-    public void setfName(String fName) {
-        this.fName = fName;
-    }
-
-    public String getlName() {
-        return lName;
-    }
-
-    public void setlName(String lName) {
-        this.lName = lName;
-    }
 
     public String getEmail() {
         return email;
@@ -90,11 +80,8 @@ public class RegisterFragViewModal extends AndroidViewModel {
 
     public void onRegisterButtonClick(View view) {
         firebaseAuth = FirebaseAuth.getInstance();
-        if (TextUtils.isEmpty(fName)) {
-            listner.onRegisterFail("First Name Required");
-        } else if (TextUtils.isEmpty(lName)) {
-            listner.onRegisterFail("Last Name Required");
-
+        if (TextUtils.isEmpty(name)) {
+            listner.onRegisterFail("Name Required");
         } else if (TextUtils.isEmpty(mobileNumber)) {
             listner.onRegisterFail("Mobile Number Required");
 
@@ -125,33 +112,34 @@ public class RegisterFragViewModal extends AndroidViewModel {
 
     }
 
-    public void saveUserData(String uid){
-        UserRegister userRegister=new UserRegister(fName,lName,email,password,mobileNumber,uid,"");
-        CurrentUserData.getInstance().setUserRegister(userRegister);
-        FirebaseObjectHandler.getInstance().getUserDocumentReference(uid).set(userRegister).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                listner.onRegisterSuccess();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                listner.onRegisterFail(e.getLocalizedMessage());
-            }
-        });
-/*        rootNode=FirebaseFirestore.getInstance();
-        collectionReferenceUsers= FirebaseObjectHandler.getInstance().getUserCollection();
-        collectionReferenceUsers.document(uid).set(userRegister).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                listner.onRegisterSuccess();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                listner.onRegisterFail(e.getLocalizedMessage());
-            }
-        });*/
+    public void saveUserData(final String uid){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        UserRegister userRegister=new UserRegister(name,email,mobileNumber,uid,"", UtilFunction.getInstance().getCurrentTime(),token);
+                        CurrentUserData.getInstance().setUserRegister(userRegister);
+                        FirebaseObjectHandler.getInstance().getUserDocumentReference(uid).set(userRegister).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                listner.onRegisterSuccess();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                listner.onRegisterFail(e.getLocalizedMessage());
+                            }
+                        });
+                    }
+                });
+
 
     }
 }

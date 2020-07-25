@@ -1,5 +1,7 @@
 package com.satyam.clubgariya.helper;
 
+import android.text.TextUtils;
+
 import com.satyam.clubgariya.modals.UserRegister;
 import com.satyam.clubgariya.ui.RegisterFragment;
 
@@ -25,16 +27,14 @@ public class CurrentUserData {
         return userRegister.getImageUrl();
     }
 
-    public String getUserFirstName(){
-        return userRegister.getfName();
+    public String getUserName(){
+        return userRegister.getName();
     }
 
-    public String getUserFullName(){
-     return userRegister.getfName()+" "+userRegister.getlName();
-    }
-
-    public String getUserLastName(){
-        return userRegister.getlName();
+    public long getTimeCreated(){
+        if(TextUtils.isEmpty(userRegister.getCreationTime()))
+            return 0;
+           else return Long.parseLong(userRegister.getCreationTime());
     }
 
     public String getUserEmail(){

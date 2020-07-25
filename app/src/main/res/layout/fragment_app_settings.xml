@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <data>
+        <variable
+            name="settingsModel"
+            type="com.satyam.clubgariya.viewmodels.AppSettingsViewModel" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_app_priority"
+        android:layout_width="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:textSize="15sp"
+        android:layout_height="wrap_content"
+        android:text="Choose your OneClick Use preference"
+        tools:layout_editor_absoluteX="146dp"
+        tools:layout_editor_absoluteY="74dp" />
+
+    <RadioGroup
+        android:id="@+id/rg_view_preference"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_app_priority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+         >
+
+        <RadioButton
+            android:id="@+id/rb_message_blog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Message | Blog | Events" />
+        <RadioButton
+            android:id="@+id/rb_blog_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Blog | Message | Events" />
+    </RadioGroup>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

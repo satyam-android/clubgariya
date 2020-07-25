@@ -24,6 +24,10 @@ public class HomeFragmentTabAdapter  extends FragmentPagerAdapter {
     }
 
 
+    public void updateStack(List<TabFragmentData> fragmentList){
+        this.fragments=fragmentList;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override

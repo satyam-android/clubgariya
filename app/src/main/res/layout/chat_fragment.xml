@@ -1,13 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="chatModel"
+            type="com.satyam.clubgariya.viewmodels.ChatViewModel" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_height="match_parent"
-    tools:context=".ui.ChatFragment">
-
-    <TextView
+    android:layout_width="match_parent"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_header_user_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Chat" />
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <ImageView
+            android:id="@+id/iv_user_profile"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/profile"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <TextView
+            android:id="@+id/tv_chat_with_username"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/iv_user_profile"
+            app:layout_constraintTop_toTopOf="@id/iv_user_profile"
+            app:layout_constraintBottom_toBottomOf="@id/iv_user_profile"
+            android:layout_height="wrap_content"
 
-</FrameLayout>
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        app:layout_constraintTop_toBottomOf="@id/layout_header_user_detail"
+        android:id="@+id/tv_same_user_message"
+        android:textSize="15sp"
+        android:padding="5dp"
+        android:text="Great Sending Message to yourself, Its a nice way to keep note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/layout_footer_send_message"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="5dp"
+      android:minHeight="70dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      >
+      <EditText
+          android:id="@+id/et_send_message"
+          app:layout_constraintBottom_toBottomOf="parent"
+          android:layout_width="match_parent"
+          app:layout_constraintEnd_toStartOf="@id/btn_send_chat_msg"
+          android:layout_height="wrap_content"/>
+      <Button
+          android:id="@+id/btn_send_chat_msg"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintTop_toTopOf="@id/et_send_message"
+          app:layout_constraintBottom_toBottomOf="@id/et_send_message"
+          android:background="@drawable/ic_send_icon"
+          app:layout_constraintEnd_toEndOf="parent"
+          />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+
+

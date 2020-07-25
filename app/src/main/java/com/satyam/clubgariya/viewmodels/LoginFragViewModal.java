@@ -41,11 +41,13 @@ public class LoginFragViewModal extends AndroidViewModel implements ILoginReposi
 
     public LoginFragViewModal(@NonNull Application application) {
         super(application);
-        name=CurrentUserData.getInstance().getUserFullName();
+        name=CurrentUserData.getInstance().getUserName();
         if (name== null) {
             welcomeString = "Welcome To Club";
         } else {
-            welcomeString = welcomeString + " " + name + ",";
+            if(name.contains("null"))
+                welcomeString ="Welcome, Please login";
+            else welcomeString = welcomeString + " " + name + ",";
         }
     }
 

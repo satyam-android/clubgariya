@@ -82,7 +82,7 @@ public class MyBlogViewModel extends AndroidViewModel implements IMyBlogReposito
 
             StorageReference ref = storageReference.child(FirebaseAuth.getInstance().getUid() + "/" + UUID.randomUUID().toString() + ".jpeg");
 
-            Blog blog = new Blog(FirebaseAuth.getInstance().getUid(), System.currentTimeMillis(), "", description,CurrentUserData.getInstance().getUserFullName(),AppConstants.BLOG_STATUS_ACTIVE);
+            Blog blog = new Blog(FirebaseAuth.getInstance().getUid(), System.currentTimeMillis(), "", description,CurrentUserData.getInstance().getUserName(),AppConstants.BLOG_STATUS_ACTIVE);
 
             Temp.getInstance().setFileUriList(filePath);
             Temp.getInstance().setBlog(blog);

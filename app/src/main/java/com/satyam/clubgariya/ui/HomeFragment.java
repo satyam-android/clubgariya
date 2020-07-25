@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
@@ -18,7 +17,6 @@ import com.satyam.clubgariya.adapters.HomeFragmentTabAdapter;
 import com.satyam.clubgariya.databinding.FragmentHomeBinding;
 import com.satyam.clubgariya.modals.TabFragmentData;
 import com.satyam.clubgariya.utils.AppConstants;
-import com.satyam.clubgariya.utils.AppSharedPreference;
 import com.satyam.clubgariya.viewmodels.HomeFragViewModal;
 
 import java.util.ArrayList;
@@ -32,6 +30,8 @@ public class HomeFragment extends BaseFragment {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private List<TabFragmentData> fragmentList;
+    private HomeFragmentTabAdapter homeFragmentTabAdapter;
+    private String currentViewStack;
 
     public static HomeFragment getInstance() {
         return new HomeFragment();
@@ -43,12 +43,14 @@ public class HomeFragment extends BaseFragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
         viewModal = ViewModelProviders.of(this).get(HomeFragViewModal.class);
         binding.setHomemodel(viewModal);
+        currentViewStack = AppConstants.VIEW_STACK;
         shoAppBar("Home");
         fragmentView = binding.getRoot();
-        viewPager=fragmentView.findViewById(R.id.tab_pager);
-        tabLayout=fragmentView.findViewById(R.id.tab_layout);
+        viewPager = fragmentView.findViewById(R.id.tab_pager);
+        tabLayout = fragmentView.findViewById(R.id.tab_layout);
         createFragmentStack();
-        viewPager.setAdapter(new HomeFragmentTabAdapter(getChildFragmentManager(),fragmentList));
+        homeFragmentTabAdapter = new HomeFragmentTabAdapter(getChildFragmentManager(), fragmentList);
+        viewPager.setAdapter(homeFragmentTabAdapter);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -70,36 +72,45 @@ public class HomeFragment extends BaseFragment {
         return fragmentView;
     }
 
-    public void setCurrentFragment(int position){
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!currentViewStack.equals(AppConstants.VIEW_STACK)) {
+//            currentViewStack = AppConstants.VIEW_STACK;
+//            createFragmentStack();
+//            homeFragmentTabAdapter.updateStack(fragmentList);
+        }
+    }
+
+    public void setCurrentFragment(int position) {
         setCurrentFragment(fragmentList.get(position).getFragment());
     }
 
-    public void createFragmentStack(){
-//        String stack= new AppSharedPreference(getContext()).getStringData(AppConstants.VIEW_STACK);
-        String stack= "";
-        fragmentList=new ArrayList<>();
-        switch (stack){
+    public void createFragmentStack() {
+        fragmentList = new ArrayList<>();
+        switch (AppConstants.VIEW_STACK) {
             case AppConstants.VIEW_STACK_EVENT_BLOG_MESSAGE:
                 fragmentList.add(new TabFragmentData(AppConstants.EVENT_FRAGMENT_TITLE, EventFragment.newInstance()));
-                fragmentList.add(new TabFragmentData(AppConstants.BLOG_FRAGMENT_TITLE,ClubBlogFragment.newInstance()));
-                fragmentList.add(new TabFragmentData(AppConstants.MESSAGE_FRAGMENT_TITLE, ChatFragment.newInstance()));
+                fragmentList.add(new TabFragmentData(AppConstants.BLOG_FRAGMENT_TITLE, ClubBlogFragment.newInstance()));
+                fragmentList.add(new TabFragmentData(AppConstants.MESSAGE_FRAGMENT_TITLE, ChatUserListFragment.newInstance()));
                 break;
 
             case AppConstants.VIEW_STACK_EVENT_MESSAGE_BLOG:
                 fragmentList.add(new TabFragmentData(AppConstants.EVENT_FRAGMENT_TITLE, EventFragment.newInstance()));
-                fragmentList.add(new TabFragmentData(AppConstants.MESSAGE_FRAGMENT_TITLE, ChatFragment.newInstance()));
-                fragmentList.add(new TabFragmentData(AppConstants.BLOG_FRAGMENT_TITLE,ClubBlogFragment.newInstance()));
+                fragmentList.add(new TabFragmentData(AppConstants.MESSAGE_FRAGMENT_TITLE, ChatUserListFragment.newInstance()));
+                fragmentList.add(new TabFragmentData(AppConstants.BLOG_FRAGMENT_TITLE, ClubBlogFragment.newInstance()));
 
                 break;
             case AppConstants.VIEW_STACK_MESSAGE_BLOG_EVENT:
-                fragmentList.add(new TabFragmentData(AppConstants.MESSAGE_FRAGMENT_TITLE, ChatFragment.newInstance()));
-                fragmentList.add(new TabFragmentData(AppConstants.BLOG_FRAGMENT_TITLE,ClubBlogFragment.newInstance()));
+                fragmentList.add(new TabFragmentData(AppConstants.MESSAGE_FRAGMENT_TITLE, ChatUserListFragment.newInstance()));
+                fragmentList.add(new TabFragmentData(AppConstants.BLOG_FRAGMENT_TITLE, ClubBlogFragment.newInstance()));
                 fragmentList.add(new TabFragmentData(AppConstants.EVENT_FRAGMENT_TITLE, EventFragment.newInstance()));
                 break;
             case AppConstants.VIEW_STACK_BLOG_MESSAGE_EVENT:
             default:
-                fragmentList.add(new TabFragmentData(AppConstants.BLOG_FRAGMENT_TITLE,ClubBlogFragment.newInstance()));
-                fragmentList.add(new TabFragmentData(AppConstants.MESSAGE_FRAGMENT_TITLE, ChatFragment.newInstance()));
+                fragmentList.add(new TabFragmentData(AppConstants.BLOG_FRAGMENT_TITLE, ClubBlogFragment.newInstance()));
+                fragmentList.add(new TabFragmentData(AppConstants.MESSAGE_FRAGMENT_TITLE, ChatUserListFragment.newInstance()));
                 fragmentList.add(new TabFragmentData(AppConstants.EVENT_FRAGMENT_TITLE, EventFragment.newInstance()));
                 break;
         }

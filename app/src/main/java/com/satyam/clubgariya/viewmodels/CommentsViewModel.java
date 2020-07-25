@@ -49,7 +49,7 @@ public class CommentsViewModel extends AndroidViewModel implements ICommentRepos
 
     public void updateComment(View view) {
         if (!TextUtils.isEmpty(commentData)) {
-            Comment comment=new Comment(blogData.documentID,firebaseAuth.getUid(), CurrentUserData.getInstance().getUserFullName(), commentData, CurrentUserData.getInstance().getUserImageUrl(),System.currentTimeMillis());
+            Comment comment=new Comment(blogData.documentID,firebaseAuth.getUid(), CurrentUserData.getInstance().getUserName(), commentData, CurrentUserData.getInstance().getUserImageUrl(),System.currentTimeMillis());
             commentData = "";
             commentRepository.updateBlog(comment);
         }

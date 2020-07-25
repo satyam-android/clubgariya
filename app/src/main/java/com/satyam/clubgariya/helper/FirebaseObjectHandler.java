@@ -47,6 +47,18 @@ public class FirebaseObjectHandler {
         return collectionReference;
     }
 
+    public CollectionReference getUsersRawContactsCollection(){
+        collectionReference=firebaseFirestore.collection(AppConstants.USERS_RAW_CONTACTS_COLLECTION);
+
+        return collectionReference;
+    }
+
+    public CollectionReference getUsersClubContactsCollection(){
+        collectionReference=firebaseFirestore.collection(AppConstants.USERS_CLUB_CONTACTS_COLLECTION);
+
+        return collectionReference;
+    }
+
     public CollectionReference getCommentCollection(){
         collectionReference=firebaseFirestore.collection(AppConstants.COMMENT_COLLECTION_NODE);
 
@@ -71,6 +83,11 @@ public class FirebaseObjectHandler {
 
     public DocumentReference getChatDocumentReference(String node){
         documentReference=getChatCollection().document(node);
+        return documentReference;
+    }
+
+    public DocumentReference getUserRawContactReference(String node){
+        documentReference=getUsersRawContactsCollection().document(node);
         return documentReference;
     }
 
