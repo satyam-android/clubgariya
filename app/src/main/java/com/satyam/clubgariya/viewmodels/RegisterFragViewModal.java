@@ -21,10 +21,8 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.satyam.clubgariya.callbacks.RegisterViewModelListner;
 import com.satyam.clubgariya.helper.CurrentUserData;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
-import com.satyam.clubgariya.modals.UserRegister;
-import com.satyam.clubgariya.utils.AppConstants;
-import com.satyam.clubgariya.utils.AppSharedPreference;
-import com.satyam.clubgariya.utils.UtilFunction;
+import com.satyam.clubgariya.database.tables.User;
+import com.satyam.clubgariya.utils.DateTimeUtilityFunctions;
 
 public class RegisterFragViewModal extends AndroidViewModel {
     private static final String TAG = "RegisterFragViewModal";
@@ -124,9 +122,9 @@ public class RegisterFragViewModal extends AndroidViewModel {
 
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
-                        UserRegister userRegister=new UserRegister(name,email,mobileNumber,uid,"", UtilFunction.getInstance().getCurrentTime(),token);
-                        CurrentUserData.getInstance().setUserRegister(userRegister);
-                        FirebaseObjectHandler.getInstance().getUserDocumentReference(uid).set(userRegister).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        User user =new User(name,"","",email,mobileNumber,uid,"", DateTimeUtilityFunctions.getInstance().getCurrentTime(),0.0,0.0,token,false);
+                        CurrentUserData.getInstance().setUser(user);
+                        FirebaseObjectHandler.getInstance().getUserDocumentReference(uid).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 listner.onRegisterSuccess();

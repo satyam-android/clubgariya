@@ -10,12 +10,26 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-public class BaseFragment extends Fragment {
+import com.onesignal.OneSignal;
+import com.satyam.clubgariya.callbacks.IBaseFragmentListner;
+import com.satyam.clubgariya.modals.ChatReference;
+import com.satyam.clubgariya.modals.TransactionReference;
+import com.satyam.clubgariya.viewmodels.BaseFragmentViewModel;
 
+import java.util.List;
+
+public abstract class BaseFragment extends Fragment implements IBaseFragmentListner {
+
+    private static final String TAG = "BaseFragment";
     public static final String PROGRESS_UPDATE = "progress_update";
+    private MutableLiveData<List<ChatReference>> chatReferences;
+    private MutableLiveData<List<TransactionReference>> transactionReferences;
 
+    private BaseFragmentViewModel viewModel;
 
     public void hideGlobalProgressBar() {
         ((MainActivity) getActivity()).hideGlobalProgressBar();
@@ -25,7 +39,13 @@ public class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewModel = ViewModelProviders.of(this).get(BaseFragmentViewModel.class);
+        viewModel.setFragmentListner(this);
+        chatReferences = new MutableLiveData<>();
+        transactionReferences = new MutableLiveData<>();
+        OneSignal.setSubscription(true);
         registerReceiver();
+
     }
 
 
@@ -39,13 +59,35 @@ public class BaseFragment extends Fragment {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(PROGRESS_UPDATE);
         bManager.registerReceiver(mBroadcastReceiver, intentFilter);
-        getActivity().registerReceiver(mBroadcastReceiver,intentFilter);
+        getActivity().registerReceiver(mBroadcastReceiver, intentFilter);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(mBroadcastReceiver);
+        if (getActivity() != null)
+            getActivity().unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
+    public void onChatReferenceChange(List<ChatReference> options) {
+        chatReferences.setValue(options);
+
+    }
+
+    public MutableLiveData<List<ChatReference>> getChatReferences() {
+
+        return chatReferences;
+    }
+
+    @Override
+    public void onTransactionReferenceChange(List<TransactionReference> transactionReferences) {
+        this.transactionReferences.setValue(transactionReferences);
+    }
+
+    public MutableLiveData<List<TransactionReference>> getTransactionReferences() {
+
+        return transactionReferences;
     }
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
@@ -71,6 +113,7 @@ public class BaseFragment extends Fragment {
         }
     };
 
+
     public void showGlobalProgressBar(String message) {
         ((MainActivity) getActivity()).showGlobalProgressBar(message);
     }
@@ -89,23 +132,33 @@ public class BaseFragment extends Fragment {
 
     }
 
-    public void closeCurrentFragment(){
+    public void closeCurrentFragment() {
         ((MainActivity) getActivity()).removeFragment();
     }
 
-    public void addFragment(Fragment fragment) {
-        ((MainActivity) getActivity()).addFragment(fragment);
+    public void addFragment(Fragment fragment,boolean addToBackStack) {
+        if(getActivity()!=null)
+        ((MainActivity) getActivity()).addFragment(fragment,addToBackStack);
     }
 
-    public void replaceFragment(Fragment fragment) {
-        ((MainActivity) getActivity()).replaceFragment(fragment);
+    public void replaceFragment(Fragment fragment,boolean addToBackStack) {
+        if (getActivity() != null)
+            ((MainActivity) getActivity()).replaceFragment(fragment);
     }
 
-    public void showLogoutButton(){
+    public void showLogoutButton() {
         ((MainActivity) getActivity()).showLogoutButton();
     }
 
-    public void hideLogoutButton(){
+    public void hideLogoutButton() {
         ((MainActivity) getActivity()).hideLogoutButton();
     }
+
+
+    @Override
+    public void onProfileUpdate() {
+        if(getActivity()!=null)
+        ((MainActivity) getActivity()).updateUserNetWorth();
+    }
+
 }

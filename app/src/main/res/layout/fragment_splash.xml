@@ -9,20 +9,65 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_light_grey"
+    android:background="@color/app_bar"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layout_splash_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
-        android:textSize="25sp"
-        android:textColor="@android:color/white"
-        android:text=" Welcome To ClubGariya"
-        />
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/tv_splash_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clickable="false"
+            android:gravity="center"
+            android:padding="3dp"
+            android:text="@string/splash_header"
+            android:textSize="25sp"
+            android:textColor="@android:color/white"
+            />
+        <ImageView
+            android:id="@+id/iv_splash_logo"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:clickable="false"
+            android:src="@drawable/madhupur_junction"
+            />
+        <TextView
+            android:id="@+id/tv_splash_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:clickable="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/splash_description"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:id="@+id/tv_click_for_detail"
+            android:clickable="false"
+            android:gravity="end"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/splash_click_text"
+            />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

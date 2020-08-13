@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/chat_settings"
+    <item android:id="@+id/message_settings"
         android:title="Chat Settings" />
+    <item android:id="@+id/app_contact_sync"
+        android:title="Sync Contact" />
+    <item android:id="@+id/message_search"
+        android:title="Search" />
+    <item android:id="@+id/create_room"
+        android:title="Create Room" />
     <item android:id="@+id/app_settings"
         android:title="App Settings" />
 </menu>

@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.viewmodels.EventViewModel;
 
-public class EventFragment extends Fragment {
+public class EventFragment extends BaseFragment {
 
     private EventViewModel mViewModel;
 
@@ -30,6 +30,8 @@ public class EventFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        setCurrentFragment(this);
+
         return inflater.inflate(R.layout.event_fragment, container, false);
     }
 

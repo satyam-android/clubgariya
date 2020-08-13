@@ -28,6 +28,7 @@ public class FileUploadService extends JobIntentService {
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notificationBuilder;
     private static final int JOB_ID = 2;
+    private final int UPLOAD_NOTIFICATION_ID=11;
 
 
     @Override
@@ -49,7 +50,7 @@ public class FileUploadService extends JobIntentService {
                 .setContentText("Uploading Image")
                 .setDefaults(0)
                 .setAutoCancel(true);
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(UPLOAD_NOTIFICATION_ID, notificationBuilder.build());
         uploadToFirebase();
     }
 
@@ -121,7 +122,7 @@ public class FileUploadService extends JobIntentService {
 
         notificationBuilder.setProgress(100, currentProgress, false);
         notificationBuilder.setContentText("Uploaded: " + currentProgress + "%");
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(UPLOAD_NOTIFICATION_ID, notificationBuilder.build());
     }
 
     private void sendProgressUpdate(boolean downloadComplete) {
@@ -134,10 +135,11 @@ public class FileUploadService extends JobIntentService {
     private void onDownloadComplete(boolean downloadComplete) {
         sendProgressUpdate(downloadComplete);
 
-        notificationManager.cancel(0);
+        notificationManager.cancel(UPLOAD_NOTIFICATION_ID);
         notificationBuilder.setProgress(0, 0, false);
         notificationBuilder.setContentText("Post Uploaded");
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(UPLOAD_NOTIFICATION_ID, notificationBuilder.build());
+        notificationManager.cancel(UPLOAD_NOTIFICATION_ID);
 
     }
 

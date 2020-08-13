@@ -9,7 +9,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.satyam.clubgariya.callbacks.ILoginRepository;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
-import com.satyam.clubgariya.modals.UserRegister;
+import com.satyam.clubgariya.database.tables.User;
 
 public class LoginRepository {
     private static ILoginRepository callBack;
@@ -47,8 +47,8 @@ public class LoginRepository {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    UserRegister userRegister = documentSnapshot.toObject(UserRegister.class);
-                    callBack.onUserDataSuccess(userRegister);
+                    User user = documentSnapshot.toObject(User.class);
+                    callBack.onUserDataSuccess(user);
                 }else{
                     callBack.onAuthFailure("User Detail Not Found");
                 }

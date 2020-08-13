@@ -2,9 +2,13 @@
 <resources>
     <color name="colorPrimary">#1274C3</color>
     <color name="app_bar">#1274C3</color>
+    <color name="app_background_color">#E4E3E3</color>
     <color name="colorPrimaryDark">#0A538E</color>
     <color name="colorAccent">#296A2B</color>
     <color name="app_title_color">#FFFFFF</color>
     <color name="app_light_grey">#E4E3E3</color>
+    <color name="text_color_balance_loss">#E32727</color>
+    <color name="text_color_balance_even">#000000</color>
+    <color name="text_color_balance_profit">#296A2B</color>
 
 </resources>

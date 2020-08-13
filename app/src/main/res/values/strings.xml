@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">ClubGariya</string>
+    <string name="app_name">OneClick</string>
     <string name="default_notification_chanel_id">ClubGariya</string>
     <string name="progress_bar_title">Loading Please Wait..</string>
+    <string name="splash_header">OneCLick</string>
+    <string name="splash_click_text">Click for more detail.</string>
+    <string name="splash_description">The application is dedicated to Madhupur.</string>
 </resources>

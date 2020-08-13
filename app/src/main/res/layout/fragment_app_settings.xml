@@ -9,6 +9,7 @@
             type="com.satyam.clubgariya.viewmodels.AppSettingsViewModel" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:background="@color/app_background_color"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -36,15 +37,35 @@
          >
 
         <RadioButton
-            android:id="@+id/rb_message_blog"
+            android:id="@+id/rb_message_payment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Message | Blog | Events" />
+            android:text="Message | Payment " />
         <RadioButton
-            android:id="@+id/rb_blog_message"
+            android:id="@+id/rb_payment_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Blog | Message | Events" />
+            android:text="Payment | Message " />
+        <RadioButton
+            android:id="@+id/rb_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Only Message " />
+        <RadioButton
+            android:id="@+id/rb_payment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Only Payment " />
     </RadioGroup>
+    <Button
+        android:id="@+id/btn_settings_save"
+        android:text="Save"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

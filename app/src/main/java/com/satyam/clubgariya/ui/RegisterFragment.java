@@ -44,7 +44,7 @@ public class RegisterFragment extends BaseFragment implements RegisterViewModelL
 
     @Override
     public void onRegisterSuccess() {
-        replaceFragment(HomeFragment.getInstance());
+        replaceFragment(HomeFragment.getInstance(),false);
     }
 
     @Override

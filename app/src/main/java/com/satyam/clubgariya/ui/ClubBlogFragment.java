@@ -55,6 +55,7 @@ public class ClubBlogFragment extends BaseFragment implements IBlogCallBack {
         binding = DataBindingUtil.inflate(inflater, R.layout.club_blog_fragment, container, false);
         blogList = new ArrayList<>();
         fragView = binding.getRoot();
+        setCurrentFragment(this);
         binding.rvMainClub.setHasFixedSize(true);
         binding.rvMainClub.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -176,12 +177,12 @@ public class ClubBlogFragment extends BaseFragment implements IBlogCallBack {
     @Override
     public void onCommentClick(Blog blogData) {
         commentBlogData = blogData;
-        replaceFragment(CommentsFragment.newInstance(blogData));
+        addFragment(CommentsFragment.newInstance(blogData),true);
     }
 
     @Override
     public void changeScreen(Fragment fragment) {
-        replaceFragment(fragment);
+        addFragment(fragment,true);
     }
 
     @Override

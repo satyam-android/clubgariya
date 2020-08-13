@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.callbacks.ILoginMobileCallback;
 import com.satyam.clubgariya.databinding.LoginMobileFragmentBinding;
+import com.satyam.clubgariya.viewmodels.LoginMobileViewModel;
 import com.satyam.clubgariya.utils.UtilFunction;
 import com.satyam.clubgariya.utils.ViewUtils;
 
@@ -48,8 +49,10 @@ public class LoginMobileFragment extends BaseFragment implements ILoginMobileCal
 
     @Override
     public void onAuthenticationSuccessful() {
+        ((MainActivity) getActivity()).implementUserProfileChange();
         UtilFunction.getInstance().startContactSyncAdapter(getContext());
-        replaceFragment(HomeFragment.getInstance());
+        addFragment(UserProfileFragment.newInstance(),true);
+
     }
 
     @Override
@@ -57,24 +60,44 @@ public class LoginMobileFragment extends BaseFragment implements ILoginMobileCal
         ViewUtils.showToast(message, getContext());
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.getRoot().setClickable(true);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        binding.getRoot().setClickable(false);
+    }
+
     private void enableRegistration() {
-        binding.tilUserName.setVisibility(View.VISIBLE);
-        binding.tilMobileNumber.setVisibility(View.VISIBLE);
+        binding.etUserName.setEnabled(true);
+        binding.etMobileCode.setEnabled(true);
+        binding.etMobileNumber.setEnabled(true);
         binding.btnRegister.setVisibility(View.VISIBLE);
         binding.tilCode.setVisibility(View.GONE);
         binding.btnVerify.setVisibility(View.GONE);
     }
 
     private void enableVerification() {
-        binding.tilUserName.setVisibility(View.GONE);
-        binding.tilMobileNumber.setVisibility(View.GONE);
+        binding.etUserName.setEnabled(false);
+        binding.etMobileNumber.setEnabled(false);
+        binding.etMobileCode.setEnabled(false);
         binding.btnRegister.setVisibility(View.GONE);
         binding.tilCode.setVisibility(View.VISIBLE);
         binding.btnVerify.setVisibility(View.VISIBLE);
+    }
+
+    private void showOtpPopup(){
+
     }
 
     @Override
     public void onCodeSend() {
         enableVerification();
     }
+
 }

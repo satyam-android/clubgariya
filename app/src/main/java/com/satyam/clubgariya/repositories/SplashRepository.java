@@ -1,19 +1,13 @@
 package com.satyam.clubgariya.repositories;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.satyam.clubgariya.callbacks.ISplashRepoCallback;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
-import com.satyam.clubgariya.modals.UserRegister;
-
-import javax.annotation.Nullable;
+import com.satyam.clubgariya.database.tables.User;
 
 public class SplashRepository {
     private static final String TAG = "SplashRepository";
@@ -31,8 +25,8 @@ public class SplashRepository {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    UserRegister userRegister = documentSnapshot.toObject(UserRegister.class);
-                    callback.onSuccess(userRegister);
+                    User user = documentSnapshot.toObject(User.class);
+                    callback.onSuccess(user);
                 }else{
                     callback.onFailure("User Detail Not Found");
                 }

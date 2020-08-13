@@ -1,5 +1,20 @@
+buildscript {
+    repositories {
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
+    dependencies {
+        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.12.8, 0.99.99]'
+    }
+}
+apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+
+repositories {
+    maven { url 'https://maven.google.com' }
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 
 android {
@@ -19,6 +34,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+                onesignal_app_id               : 'd696a331-d0ae-423a-a263-4f352e46513b',
+                // Project number pulled from dashboard, local value is ignored.
+                onesignal_google_project_number: 'REMOTE'
+        ]
     }
 
     buildTypes {
@@ -27,9 +47,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
+    implementation 'androidx.navigation:navigation-fragment:2.1.0'
+    implementation 'androidx.navigation:navigation-ui:2.1.0'
     def room_version = "2.2.5"
     def lifecycle_version = "1.1.1"
 
@@ -39,6 +65,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
     implementation 'com.google.firebase:firebase-messaging:20.2.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.1.1'
     testImplementation 'junit:junit:4.13'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.2.0'
@@ -63,4 +90,11 @@ dependencies {
 
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    // Image Display on Chat
+    implementation 'com.facebook.fresco:fresco:2.3.0'
+    implementation 'com.github.stfalcon:frescoimageviewer:0.5.0'
+
+    //One Signal
+    implementation 'com.onesignal:OneSignal:[3.15.0, 3.99.99]'
 }

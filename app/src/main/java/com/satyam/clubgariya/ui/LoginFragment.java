@@ -89,7 +89,7 @@ public class LoginFragment extends BaseFragment implements LoginViewModalListner
 
     @Override
     public void onAuthSuccess() {
-        replaceFragment(HomeFragment.getInstance());
+        replaceFragment(HomeFragment.getInstance(),false);
 
     }
 
@@ -102,6 +102,6 @@ public class LoginFragment extends BaseFragment implements LoginViewModalListner
 
     @Override
     public void changeFragment(Fragment fragment) {
-        replaceFragment(fragment);
+        replaceFragment(fragment,false);
     }
 }

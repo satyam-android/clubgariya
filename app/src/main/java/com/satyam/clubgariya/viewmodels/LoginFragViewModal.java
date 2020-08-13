@@ -2,30 +2,20 @@ package com.satyam.clubgariya.viewmodels;
 
 import android.app.Application;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.satyam.clubgariya.callbacks.ILoginRepository;
 import com.satyam.clubgariya.callbacks.LoginViewModalListner;
 import com.satyam.clubgariya.helper.CurrentUserData;
-import com.satyam.clubgariya.modals.Login;
 import com.satyam.clubgariya.modals.LoginError;
-import com.satyam.clubgariya.modals.UserRegister;
+import com.satyam.clubgariya.database.tables.User;
 import com.satyam.clubgariya.repositories.LoginRepository;
 import com.satyam.clubgariya.ui.RegisterFragment;
-import com.satyam.clubgariya.utils.AppConstants;
-import com.satyam.clubgariya.utils.AppSharedPreference;
 import com.satyam.clubgariya.utils.AppValidator;
 
 public class LoginFragViewModal extends AndroidViewModel implements ILoginRepository {
@@ -108,8 +98,8 @@ public class LoginFragViewModal extends AndroidViewModel implements ILoginReposi
     }
 
     @Override
-    public void onUserDataSuccess(UserRegister userRegister) {
-        CurrentUserData.getInstance().setUserRegister(userRegister);
+    public void onUserDataSuccess(User user) {
+        CurrentUserData.getInstance().setUser(user);
         showProgress.setValue(false);
         loginViewModalListner.onAuthSuccess();
     }
