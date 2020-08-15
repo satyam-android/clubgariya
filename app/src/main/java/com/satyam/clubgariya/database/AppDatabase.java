@@ -8,21 +8,28 @@ import androidx.room.DatabaseConfiguration;
 import androidx.room.InvalidationTracker;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
+import com.satyam.clubgariya.database.dao.ChatDao;
+import com.satyam.clubgariya.database.dao.ChatReferenceDao;
 import com.satyam.clubgariya.database.dao.UserDao;
+import com.satyam.clubgariya.database.tables.AppChat;
+import com.satyam.clubgariya.database.tables.AppChatReference;
 import com.satyam.clubgariya.database.tables.User;
+import com.satyam.clubgariya.utils.AppDataConverter;
 
-@Database(entities = User.class, exportSchema = false, version = 5)
-public abstract class UserDB extends RoomDatabase {
+@Database(entities = {User.class, AppChatReference.class, AppChat.class}, exportSchema = false, version = 7)
+@TypeConverters({AppDataConverter.class})
+public abstract class AppDatabase extends RoomDatabase {
 
     private static final String DB_NAME = "CLubContacts";
-    private static UserDB instance;
+    private static AppDatabase instance;
 
 
-    public static synchronized UserDB getInstance(Context context) {
+    public static synchronized AppDatabase getInstance(Context context) {
         if (instance == null)
-            instance = Room.databaseBuilder(context.getApplicationContext(), UserDB.class, DB_NAME).fallbackToDestructiveMigration().build();
+            instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DB_NAME).fallbackToDestructiveMigration().build();
         return instance;
     }
 
@@ -44,4 +51,6 @@ public abstract class UserDB extends RoomDatabase {
     }
 
     public abstract UserDao userDao();
+    public abstract ChatDao chatDao();
+    public abstract ChatReferenceDao chatReferenceDao();
 }

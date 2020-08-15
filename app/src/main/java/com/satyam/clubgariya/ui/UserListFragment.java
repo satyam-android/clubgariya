@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.adapters.UsersListAdapter;
 import com.satyam.clubgariya.callbacks.UserListListner;
-import com.satyam.clubgariya.database.UserDB;
+import com.satyam.clubgariya.database.AppDatabase;
 import com.satyam.clubgariya.database.tables.User;
 import com.satyam.clubgariya.databinding.UserListFragmentBinding;
 import com.satyam.clubgariya.modals.ChatReference;
@@ -66,7 +66,7 @@ public class UserListFragment extends BaseFragment implements UserListListner {
 
     public void getAllClubContacts() {
 
-        UserDB.getInstance(getContext()).userDao().getClubContactList(true).observe(getActivity(), new Observer<List<User>>() {
+        AppDatabase.getInstance(getContext()).userDao().getClubContactList(true).observe(getActivity(), new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> appContacts) {
                 clubUsers = appContacts;

@@ -1,28 +1,24 @@
 package com.satyam.clubgariya.ui;
 
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.adapters.ChatReferenceAdapterNew;
-import com.satyam.clubgariya.callbacks.ChatReferenceListListner;
 import com.satyam.clubgariya.callbacks.UserListListner;
-import com.satyam.clubgariya.database.tables.User;
+import com.satyam.clubgariya.database.tables.AppChatReference;
 import com.satyam.clubgariya.databinding.ChatListFragmentBinding;
-import com.satyam.clubgariya.helper.FirebaseObjectHandler;
 import com.satyam.clubgariya.modals.ChatReference;
 import com.satyam.clubgariya.utils.AppConstants;
 import com.satyam.clubgariya.viewmodels.ChatListViewModel;
@@ -67,11 +63,12 @@ public class ChatUserListFragment extends BaseFragment implements UserListListne
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(ChatListViewModel.class);
         implementChatListAdapter();
+
         getChatReferences().observe(getActivity(), new Observer<List<ChatReference>>() {
             @Override
             public void onChanged(List<ChatReference> chatReferences) {
                 options= chatReferences;
-//                Log.e(TAG, "onChanged: "+options.size() );
+                Log.e(TAG, "onChanged: "+options.size() );
                 mAdapter.updateData(options);
             }
         });

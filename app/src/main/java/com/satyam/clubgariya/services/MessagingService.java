@@ -16,7 +16,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.satyam.clubgariya.AppApplication;
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
-import com.satyam.clubgariya.repositories.FirebaseMessagingRepository;
+import com.satyam.clubgariya.repositories.MessagingRepository;
 import com.satyam.clubgariya.ui.MainActivity;
 import com.satyam.clubgariya.utils.AppConstants;
 import com.satyam.clubgariya.utils.AppSharedPreference;
@@ -160,6 +160,6 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
-        FirebaseMessagingRepository.getInstance().updateFcmToken(s);
+        MessagingRepository.getInstance().updateFcmToken(s);
     }
 }

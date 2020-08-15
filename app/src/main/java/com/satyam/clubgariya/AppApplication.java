@@ -10,7 +10,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.core.ImageTranscoderType;
 import com.facebook.imagepipeline.core.MemoryChunkType;
-import com.onesignal.OneSignal;
 
 public class AppApplication extends Application {
 
@@ -30,10 +29,6 @@ public class AppApplication extends Application {
                 .build();
         Fresco.initialize(getApplicationContext(),config);
         // OneSignal Initialization
-        OneSignal.startInit(this)
-                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-                .unsubscribeWhenNotificationsAreDisabled(true)
-                .init();
         createNotificationChannels();
     }
 

@@ -23,8 +23,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.callbacks.UserListListner;
-import com.satyam.clubgariya.database.UserDB;
-import com.satyam.clubgariya.database.tables.User;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
 import com.satyam.clubgariya.modals.ChatReference;
 

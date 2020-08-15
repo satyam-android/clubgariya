@@ -18,7 +18,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.satyam.clubgariya.database.UserDB;
+import com.satyam.clubgariya.database.AppDatabase;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
 import com.satyam.clubgariya.database.tables.User;
 import com.satyam.clubgariya.utils.AppConstants;
@@ -34,7 +34,7 @@ import java.util.List;
 public class ContactSyncService extends JobIntentService {
     private static final String TAG = "ContactSyncService";
     private static final int JOB_ID = 1;
-    UserDB contactDB;
+    AppDatabase contactDB;
     private List<User> contactList;
     private int dbSyncIndex;
     private int dbAddIndex;
@@ -59,7 +59,7 @@ public class ContactSyncService extends JobIntentService {
     private void startContactSync() {
         countryIso=UtilFunction.getInstance().getCountryIso(this);
         contactList = new ArrayList<>();
-        contactDB = UserDB.getInstance(getApplicationContext());
+        contactDB = AppDatabase.getInstance(getApplicationContext());
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, ContactsContract.Contacts.CONTACT_LAST_UPDATED_TIMESTAMP+" ASC");

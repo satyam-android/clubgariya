@@ -28,8 +28,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -39,7 +37,7 @@ import com.satyam.clubgariya.adapters.ChatAdapter;
 import com.satyam.clubgariya.adapters.MediaAdapter;
 import com.satyam.clubgariya.callbacks.ChatAdapterCallback;
 import com.satyam.clubgariya.callbacks.ChatImageAdapterCallback;
-import com.satyam.clubgariya.database.UserDB;
+import com.satyam.clubgariya.database.AppDatabase;
 import com.satyam.clubgariya.database.tables.User;
 import com.satyam.clubgariya.databinding.ChatFragmentBinding;
 import com.satyam.clubgariya.helper.CurrentUserData;
@@ -395,7 +393,7 @@ public class ChatFragment extends BaseFragment implements ChatAdapterCallback, C
     }
 
     public void getPartnerDetail(String uid) {
-        UserDB.getInstance(getContext()).userDao().getUserDetailByUid(uid).observe(getActivity(), new Observer<User>() {
+        AppDatabase.getInstance(getContext()).userDao().getUserDetailByUid(uid).observe(getActivity(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 if(user!=null)

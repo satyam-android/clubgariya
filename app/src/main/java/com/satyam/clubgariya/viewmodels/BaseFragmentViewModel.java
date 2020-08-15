@@ -53,7 +53,7 @@ public class BaseFragmentViewModel extends AndroidViewModel {
                 references = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     ChatReference chatReference = doc.toObject(ChatReference.class);
-//                    Log.e(TAG, "CHat References: "+chatReference.getChattingWith() );
+                    Log.e(TAG, "CHat References: "+chatReference.getLastMessage() );
                     references.add(chatReference);
                 }
                 listner.onChatReferenceChange(references);

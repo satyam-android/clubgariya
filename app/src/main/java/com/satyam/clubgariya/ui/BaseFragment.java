@@ -14,7 +14,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.onesignal.OneSignal;
 import com.satyam.clubgariya.callbacks.IBaseFragmentListner;
 import com.satyam.clubgariya.modals.ChatReference;
 import com.satyam.clubgariya.modals.TransactionReference;
@@ -43,7 +42,6 @@ public abstract class BaseFragment extends Fragment implements IBaseFragmentList
         viewModel.setFragmentListner(this);
         chatReferences = new MutableLiveData<>();
         transactionReferences = new MutableLiveData<>();
-        OneSignal.setSubscription(true);
         registerReceiver();
 
     }

@@ -33,9 +33,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.onesignal.OneSignal;
 import com.satyam.clubgariya.R;
-import com.satyam.clubgariya.database.UserDB;
+import com.satyam.clubgariya.database.AppDatabase;
 import com.satyam.clubgariya.databinding.ActivityMainBinding;
 import com.satyam.clubgariya.helper.CurrentUserData;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (savedInstanceState == null) {
             addFragment(SplashFragment.getInstance(), false);
         }
-    }
+  }
 
 
     @Override
@@ -207,13 +206,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.iv_logout:
-                OneSignal.setSubscription(false);
                 FirebaseAuth.getInstance().signOut();
                 replaceFragment(LoginFragment.getInstance());
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        UserDB.getInstance(getApplicationContext()).userDao().deleteContactTable();
+                        AppDatabase.getInstance(getApplicationContext()).userDao().deleteContactTable();
                     }
                 }).start();
                 break;
@@ -262,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        for(int i=0;i<fragmentManager.getBackStackEntryCount();i++){
 //            Log.e(TAG, "after replace commit: "+fragmentManager.getFragments().get(i).getClass().getName() );
 //        }
+
 
     }
 
