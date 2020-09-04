@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.callbacks.RegisterViewModelListner;
+import com.satyam.clubgariya.database.tables.User;
 import com.satyam.clubgariya.databinding.FragmentRegisterBinding;
 import com.satyam.clubgariya.utils.ViewUtils;
 import com.satyam.clubgariya.viewmodels.RegisterFragViewModal;
@@ -43,7 +44,8 @@ public class RegisterFragment extends BaseFragment implements RegisterViewModelL
     }
 
     @Override
-    public void onRegisterSuccess() {
+    public void onRegisterSuccess(User user) {
+        setUserData(user);
         replaceFragment(HomeFragment.getInstance(),false);
     }
 

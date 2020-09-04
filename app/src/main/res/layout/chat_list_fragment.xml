@@ -21,8 +21,8 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fb_new_chat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/medium_icon_width"
+            android:layout_height="@dimen/medium_icon_height"
             android:layout_marginRight="10dp"
             android:backgroundTint="@color/app_bar"
             android:layout_marginBottom="10dp"

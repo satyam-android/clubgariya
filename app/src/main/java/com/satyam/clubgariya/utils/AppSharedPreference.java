@@ -25,6 +25,17 @@ public class AppSharedPreference {
         editor.commit();
     }
 
+    public void setBooleanData(String key, boolean value) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(key, value);
+        editor.commit();
+    }
+
+    public boolean getBooleanData(String key) {
+        return preferences.getBoolean(key, false);
+    }
+
+
     public String getStringData(String key) {
         return preferences.getString(key, null);
     }

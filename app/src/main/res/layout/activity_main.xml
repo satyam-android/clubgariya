@@ -9,6 +9,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         android:layout_height="@dimen/app_bar_height"
         android:background="@color/app_bar"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,7 +27,9 @@
                 android:id="@+id/iv_profile_image"
                 android:layout_width="@dimen/medium_icon_width"
                 android:layout_height="@dimen/medium_icon_height"
-                app:placeholderImage="@drawable/profile"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                app:placeholderImage="@drawable/icon_account"
                 app:roundAsCircle="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
@@ -79,11 +83,12 @@
                 />
             <ImageView
                 android:id="@+id/iv_option_menu"
-                android:layout_width="@dimen/small_icon_width"
-                android:layout_height="@dimen/small_icon_height"
+                android:padding="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/three_dot"
+                android:src="@drawable/icon_menu_dot"
                 />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -104,18 +109,21 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/rl_progress_bar_container"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:context=".ui.MainActivity" />
         <RelativeLayout
             android:id="@+id/rl_progress_bar_container"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:layout_centerInParent="true">
+            >
             <ProgressBar
                 android:id="@+id/progressbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:progressTint="@color/app_bar"
                 android:visibility="visible"
                 android:layout_gravity="center" />
             <TextView
@@ -124,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_toRightOf="@id/progressbar"
                 android:text="@string/progress_bar_title"
                 />

@@ -1,6 +1,9 @@
 package com.satyam.clubgariya.adapters;
 
 import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.satyam.clubgariya.R;
 
+import java.io.File;
 import java.util.List;
 
 public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaAdapterHolder> {
-
+    private static final String TAG = "MediaAdapter";
     private Context context;
     private List<String> mediaUriList;
 
@@ -33,8 +37,17 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MediaAdapterHolder holder, int position) {
-        Glide.with(context).load(mediaUriList.get(position)).into(holder.imageView);
+        String imageUri= mediaUriList.get(position);
+//        String imageUri= new File(mediaUriList.get(position)).getAbsolutePath();
+        Log.e(TAG, "onBindViewHolder: "+imageUri );
+        Glide.with(context).load(imageUri).into(holder.imageView);
+
     }
+public void updateMediaList(List<String> mediaUriList)
+{
+    this.mediaUriList=mediaUriList;
+    notifyDataSetChanged();
+}
 
     @Override
     public int getItemCount() {

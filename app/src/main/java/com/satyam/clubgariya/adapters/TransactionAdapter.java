@@ -47,7 +47,7 @@ public class TransactionAdapter extends FirestoreRecyclerAdapter<Transaction, Tr
     private TransactionImageAdapter transactionImageAdapter;
     private GridLayoutManager gridLayoutManager;
     private TransactionImageAdapterCallback transactionImageAdapterCallback;
-    private String currencySymbol="";
+    private String currencySymbol = "";
 
     public TransactionAdapter(Context context, @NonNull FirestoreRecyclerOptions<Transaction> options, TransactionImageAdapterCallback transactionImageAdapterCallback, TransactionAdapterCallback callback) {
         super(options);
@@ -55,8 +55,8 @@ public class TransactionAdapter extends FirestoreRecyclerAdapter<Transaction, Tr
         uid = FirebaseObjectHandler.getInstance().getFirebaseAuth().getUid();
         this.callback = callback;
         this.context = context;
-        this.transactionImageAdapterCallback=transactionImageAdapterCallback;
-        currencySymbol= UtilFunction.getInstance().getLocalCurrencySymbol();
+        this.transactionImageAdapterCallback = transactionImageAdapterCallback;
+        currencySymbol = UtilFunction.getInstance().getLocalCurrencySymbol(context);
     }
 
     @Override
@@ -79,27 +79,27 @@ public class TransactionAdapter extends FirestoreRecyclerAdapter<Transaction, Tr
         });
         if (uid.equals(model.getUserId())) {
             holder.layoutRow.setGravity(Gravity.END);
-            if(model.getSettlementStatus().equals(AppConstants.TRANSACTION_DISPUTE))
-            holder.layout.setBackground(context.getDrawable(R.drawable.chat_bubble_out_dispute));
+            if (model.getSettlementStatus().equals(AppConstants.TRANSACTION_DISPUTE))
+                holder.layout.setBackground(context.getDrawable(R.drawable.chat_bubble_out_dispute));
             else holder.layout.setBackground(context.getDrawable(R.drawable.chat_bubble_out));
             holder.ivMessageStatus.setVisibility(View.VISIBLE);
-            setImageByStatus(holder,model.getSettlementStatus(),true);
+            setImageByStatus(holder, model.getSettlementStatus(), true);
             if (model.getDeliveryStatus() != null)
                 holder.ivMessageStatus.setImageDrawable(context.getDrawable(getMessageStatusDrawableId(model.getDeliveryStatus())));
         } else {
 
             holder.layoutRow.setGravity(Gravity.START);
-            if(model.getSettlementStatus().equals(AppConstants.TRANSACTION_DISPUTE))
+            if (model.getSettlementStatus().equals(AppConstants.TRANSACTION_DISPUTE))
                 holder.layout.setBackground(context.getDrawable(R.drawable.chat_bubble_in_dispute));
-            else    holder.layout.setBackground(context.getDrawable(R.drawable.chat_bubble_in));
+            else holder.layout.setBackground(context.getDrawable(R.drawable.chat_bubble_in));
             holder.ivMessageStatus.setVisibility(View.GONE);
-            setImageByStatus(holder,model.getSettlementStatus(),false);
+            setImageByStatus(holder, model.getSettlementStatus(), false);
         }
-        holder.tvTime.setText(DateTimeUtilityFunctions.getInstance().timeStampToDateTime("dd/MM/yyyy HH:mm",Long.parseLong(model.getTimestamp())));
+        holder.tvTime.setText(DateTimeUtilityFunctions.getInstance().timeStampToDateTime("dd/MM/yyyy HH:mm", Long.parseLong(model.getTimestamp())));
         if (model.getTransMediaList() != null) {
             if (model.getTransMediaList().size() > 0) {
                 holder.imageContainer.setVisibility(View.VISIBLE);
-                transactionImageAdapter = new TransactionImageAdapter(holder.imageContainer.getContext(), model,transactionImageAdapterCallback);
+                transactionImageAdapter = new TransactionImageAdapter(holder.imageContainer.getContext(), model, transactionImageAdapterCallback);
                 if (model.getTransMediaList().size() > 3) {
                     gridLayoutManager = new GridLayoutManager(context, 2);
                 } else {
@@ -113,20 +113,19 @@ public class TransactionAdapter extends FirestoreRecyclerAdapter<Transaction, Tr
             holder.tvMessage.setVisibility(View.GONE);
         else {
             holder.tvMessage.setVisibility(View.VISIBLE);
-            holder.tvMessage.setText("Message :"+model.getTransMessage());
+            holder.tvMessage.setText("Message :" + model.getTransMessage());
         }
-        holder.tvTransAmount.setText("Amount  : "+currencySymbol+model.getTransAmount());
+        holder.tvTransAmount.setText("Amount  : " + currencySymbol + model.getTransAmount());
         holder.tvMessage.setOnClickListener((view -> {
             callback.itemCLick(model);
         }));
-        holder.ivTransSuccess.setOnClickListener((view)->{
-            model.setSettlementStatus(AppConstants.TRANSACTION_CONFIRM);
-            callback.updateTransaction(model);
+        holder.ivTransSuccess.setOnClickListener((view) -> {
+            callback.updateTransactionAccept(model);
         });
 
-        holder.ivTransFailed.setOnClickListener((view)->{
+        holder.ivTransFailed.setOnClickListener((view) -> {
             model.setSettlementStatus(AppConstants.TRANSACTION_DISPUTE);
-            callback.updateTransaction(model);
+            callback.updateTransactionDispute(model);
         });
     }
 
@@ -187,15 +186,15 @@ public class TransactionAdapter extends FirestoreRecyclerAdapter<Transaction, Tr
     }
 
 
-    private void setImageByStatus(TransactionViewHolder holder,String status,boolean isSender){
-        if(isSender){
+    private void setImageByStatus(TransactionViewHolder holder, String status, boolean isSender) {
+        if (isSender) {
             holder.ivTransFailed.setVisibility(View.GONE);
             holder.ivTransSuccess.setVisibility(View.GONE);
             holder.ivTransFinalStatus.setVisibility(View.VISIBLE);
-            switch (status){
+            switch (status) {
                 case AppConstants.TRANSACTION_DISPUTE:
                     holder.ivTransFinalStatus.setImageResource(R.drawable.transaction_disputed);
-                break;
+                    break;
                 case AppConstants.TRANSACTION_CONFIRM:
                     holder.ivTransFinalStatus.setImageResource(R.drawable.transaction_successful);
                     break;
@@ -204,9 +203,9 @@ public class TransactionAdapter extends FirestoreRecyclerAdapter<Transaction, Tr
                     holder.ivTransFinalStatus.setImageResource(R.drawable.transaction_initiated);
                     break;
             }
-        }else{
+        } else {
 
-            switch (status){
+            switch (status) {
                 case AppConstants.TRANSACTION_DISPUTE:
                     holder.ivTransFailed.setVisibility(View.GONE);
                     holder.ivTransSuccess.setVisibility(View.GONE);

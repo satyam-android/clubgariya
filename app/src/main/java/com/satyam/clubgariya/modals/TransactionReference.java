@@ -1,103 +1,93 @@
 package com.satyam.clubgariya.modals;
 
+import com.google.firebase.firestore.Exclude;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class TransactionReference {
+    @Exclude
     private String transReferenceId;
-    private String lastMessageTime;
+    private long lastMessageTime;
     private String lastMessage;
-    private String partnerName;
-    private double userCredit;
-    private double partnerCredit;
-    private String partnerUid;
-    private String userName;
-    private String userUid;
-    private String userProfile_image;
+    private double totalCredit;
+    private List<String> allowedUids;
+    private List<TransactionReferenceUser> users;
+    private String createdBy;
+    private String groupUserId;
+    private String referenceType;
 
     public TransactionReference(){
 
     }
 
-    public TransactionReference(String transReferenceId, String lastMessageTime, String lastMessage, String partnerName,String partnerUid,String userName,String userUid,double userCredit,double partnerCredit,String userProfile_image) {
-        this.transReferenceId = transReferenceId;
+    public TransactionReference(String transReferenceId,String createdBy,String groupUserId,String referenceType,long lastMessageTime, String lastMessage,double totalCredit,List<String> allowedUids,List<TransactionReferenceUser> users) {
         this.lastMessageTime = lastMessageTime;
         this.lastMessage = lastMessage;
-        this.partnerName=partnerName;
-        this.partnerUid=partnerUid;
-        this.userCredit=userCredit;
-        this.partnerCredit=partnerCredit;
-        this.userName=userName;
-        this.userUid=userUid;
-        this.userProfile_image=userProfile_image;
+        this.transReferenceId=transReferenceId;
+        this.allowedUids=allowedUids;
+        this.users = users;
+        this.referenceType=referenceType;
+        this.totalCredit=totalCredit;
+        this.createdBy=createdBy;
+        this.groupUserId=groupUserId;
     }
 
-    public String getUserProfile_image() {
-        return userProfile_image;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setUserProfile_image(String userProfile_image) {
-        this.userProfile_image = userProfile_image;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
-    public String getPartnerUid() {
-        return partnerUid;
+    public String getGroupUserId() {
+        return groupUserId;
     }
 
-    public void setPartnerUid(String partnerUid) {
-        this.partnerUid = partnerUid;
+    public void setGroupUserId(String groupUserId) {
+        this.groupUserId = groupUserId;
     }
 
-    public double getUserCredit() {
-        return userCredit;
+    public String getReferenceType() {
+        return referenceType;
     }
 
-    public void setUserCredit(double userCredit) {
-        this.userCredit = userCredit;
+    public void setReferenceType(String referenceType) {
+        this.referenceType = referenceType;
     }
 
-    public double getPartnerCredit() {
-        return partnerCredit;
+    public List<String> getAllowedUids() {
+        return allowedUids;
     }
 
-    public void setPartnerCredit(double partnerCredit) {
-        this.partnerCredit = partnerCredit;
+    public void setAllowedUids(List<String> userIds) {
+        this.allowedUids = userIds;
     }
 
-    public String getPartnerName() {
-        return partnerName;
+    public double getTotalCredit() {
+        return totalCredit;
     }
 
-    public void setPartnerName(String partnerName) {
-        this.partnerName = partnerName;
+    public void setTotalCredit(double totalCredit) {
+        this.totalCredit = totalCredit;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserUid() {
-        return userUid;
-    }
-
-    public void setUserUid(String userUid) {
-        this.userUid = userUid;
-    }
-
-    public String getTransactionReferenceId() {
+    @Exclude
+    public String getTransReferenceId() {
         return transReferenceId;
     }
 
-    public void setTransactionReferenceId(String chatReferenceId) {
-        this.transReferenceId = chatReferenceId;
+
+    public void setTransReferenceId(String transReferenceId) {
+        this.transReferenceId = transReferenceId;
     }
 
-    public String getLastMessageTime() {
+    public long getLastMessageTime() {
         return lastMessageTime;
     }
 
-    public void setLastMessageTime(String lastMessageTime) {
+    public void setLastMessageTime(long lastMessageTime) {
         this.lastMessageTime = lastMessageTime;
     }
 
@@ -107,5 +97,13 @@ public class TransactionReference {
 
     public void setLastMessage(String lastMessage) {
         this.lastMessage = lastMessage;
+    }
+
+    public List<TransactionReferenceUser> getUsers() {
+        return users;
+    }
+
+    public void setUsers(ArrayList<TransactionReferenceUser> users) {
+        this.users = users;
     }
 }

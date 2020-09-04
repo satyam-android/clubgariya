@@ -24,6 +24,15 @@ public interface UserDao {
     @Query("Select * from Users where clubMember= :isClubUser ORDER BY creationTime DESC")
     LiveData<List<User>> getClubContactList(boolean isClubUser);
 
+    @Query("Select * from Users where clubMember= :isClubUser AND mobile !=:mobile ORDER BY creationTime DESC")
+    LiveData<List<User>> getClubContactListExcludeNumber(boolean isClubUser, String mobile);
+
+    @Query("Select name from Users where mobile=:mobile")
+    LiveData<String> getNameByMobile(String mobile);
+
+    @Query("Select name from Users where mobile=:mobile")
+    String getNameFromMobile(String mobile);
+
     @Query("Select * from Users where clubMember= :isClubUser ORDER BY creationTime DESC")
     List<User> getClubContact(boolean isClubUser);
 
@@ -36,25 +45,29 @@ public interface UserDao {
     @Query("Select * from Users where mobile=:number limit 1")
     User getContactDetail(String number);
 
-    @Query("Select * from Users where uid=:uid limit 1")
-    LiveData<User> getUserDetailByUid(String uid);
+    @Query("Select * from Users where mobile=:number limit 1")
+    LiveData<User> getUserDetailByNumber(String number);
 
     @Query("Select * from Users where uid=:uid limit 1")
-    User getContactDetailByUid(String uid);
+    LiveData<User>  getContactDetailByUid(String uid);
+
+    @Query("Select * from Users where uid=:uid limit 1")
+    User  getUserDetailByUid(String uid);
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateUser(User user);
 
     @Query("UPDATE Users SET name=:name WHERE mobile=:mobile")
-    void updateContactName(String name,String mobile);
+    void updateContactName(String name, String mobile);
 
     @Query("UPDATE Users SET clubMember=:isMember WHERE mobile=:mobile")
-    void updateContactClubMembership(boolean isMember,String mobile);
+    void updateContactClubMembership(boolean isMember, String mobile);
 
-    @Query("UPDATE Users SET imageUrl=:imageUrl,email=:email,uid=:uid, creationTime=:creationTime,fcm_Token=:fcmToken,status=:status,profileStatus=:profileStatus,totalCredit=:totalCredit,totalDebit=:totalDebit,clubMember=:clubMember WHERE mobile=:mobile")
-    void updateUserData(String imageUrl,String email,String uid,String creationTime,String fcmToken,String status,String profileStatus,double totalCredit,double totalDebit,boolean clubMember,String mobile);
+    @Query("UPDATE Users SET imageUrl=:imageUrl,email=:email,uid=:uid, creationTime=:creationTime,fcm_Token=:fcmToken,userStatus=:status,profileStatus=:profileStatus,totalCredit=:totalCredit,totalDebit=:totalDebit,clubMember=:clubMember WHERE mobile=:mobile")
+    void updateUserData(String imageUrl, String email, String uid, long creationTime, String fcmToken, String status, String profileStatus, double totalCredit, double totalDebit, boolean clubMember, String mobile);
 
     @Query("UPDATE Users SET uid=:uid,clubMember=:isMember WHERE mobile=:mobile")
-    void updateContactUidWithClubMembership(String uid,boolean isMember,String mobile);
+    void updateContactUidWithClubMembership(String uid, boolean isMember, String mobile);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertContact(User appContact);

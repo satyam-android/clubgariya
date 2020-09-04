@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.adapters.ChatReferenceAdapterNew;
+import com.satyam.clubgariya.callbacks.ChatReferenceListFragmentListner;
 import com.satyam.clubgariya.callbacks.UserListListner;
 import com.satyam.clubgariya.database.tables.AppChatReference;
 import com.satyam.clubgariya.databinding.ChatListFragmentBinding;
@@ -26,7 +27,7 @@ import com.satyam.clubgariya.viewmodels.ChatListViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatUserListFragment extends BaseFragment implements UserListListner {
+public class ChatUserListFragment extends BaseFragment implements ChatReferenceListFragmentListner {
     private static final String TAG = "ChatUserListFragment";
 
     private ChatListFragmentBinding binding;
@@ -58,20 +59,25 @@ public class ChatUserListFragment extends BaseFragment implements UserListListne
         return fragView;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.getRoot().setClickable(true);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        binding.getRoot().setClickable(false);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(ChatListViewModel.class);
+        mViewModel.setListner(this);
         implementChatListAdapter();
-
-        getChatReferences().observe(getActivity(), new Observer<List<ChatReference>>() {
-            @Override
-            public void onChanged(List<ChatReference> chatReferences) {
-                options= chatReferences;
-                Log.e(TAG, "onChanged: "+options.size() );
-                mAdapter.updateData(options);
-            }
-        });
     }
 
 
@@ -149,10 +155,17 @@ public class ChatUserListFragment extends BaseFragment implements UserListListne
     }
 
     @Override
-    public void onUserClick(String userUid) {
+    public void onChatReferenceChange(List<ChatReference> list) {
+        options=list;
+        mAdapter.updateData(options);
+
+    }
+
+    @Override
+    public void onUserClick(ChatReference chatReference) {
 //        if(TextUtils.isEmpty(appContact.getUid()))
 //            appContact.setUid(FirebaseObjectHandler.getInstance().getFirebaseAuth().getUid());
-        addFragment(ChatFragment.newInstance(userUid),true);
+        addFragment(ChatFragment.newInstance(null,chatReference),true);
     }
 
     @Override

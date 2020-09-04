@@ -44,7 +44,7 @@ public class HomeFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
         viewModal = ViewModelProviders.of(this).get(HomeFragViewModal.class);
-        binding.setHomemodel(viewModal);
+//        binding.setHomemodel(viewModal);
         shoAppBar(getString(R.string.app_name));
         appSharedPreference=new AppSharedPreference(getContext());
         currentViewStack = appSharedPreference.getStringData(AppConstants.VIEW_STACK);

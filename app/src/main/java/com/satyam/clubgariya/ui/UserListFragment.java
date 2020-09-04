@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.adapters.UsersListAdapter;
@@ -20,6 +21,7 @@ import com.satyam.clubgariya.callbacks.UserListListner;
 import com.satyam.clubgariya.database.AppDatabase;
 import com.satyam.clubgariya.database.tables.User;
 import com.satyam.clubgariya.databinding.UserListFragmentBinding;
+import com.satyam.clubgariya.helper.CurrentUserData;
 import com.satyam.clubgariya.modals.ChatReference;
 import com.satyam.clubgariya.utils.AppConstants;
 import com.satyam.clubgariya.viewmodels.UserListViewModel;
@@ -63,6 +65,17 @@ public class UserListFragment extends BaseFragment implements UserListListner {
         // TODO: Use the ViewModel
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.getRoot().setClickable(true);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        binding.getRoot().setClickable(false);
+    }
 
     public void getAllClubContacts() {
 
@@ -84,10 +97,14 @@ public class UserListFragment extends BaseFragment implements UserListListner {
     public void onUserClick(String uid) {
         switch (calledBy) {
             case AppConstants.USER_LIST_FOR_CHAT:
-              addFragment(ChatFragment.newInstance(uid),true);
+                if(uid.equals(CurrentUserData.getInstance().getUid()))
+                    Toast.makeText(getActivity(),"Notes Feature Will be added soon",Toast.LENGTH_LONG).show();
+              else addFragment(ChatFragment.newInstance(uid,null),true);
             break;
             case AppConstants.USER_LIST_FOR_TRANSACTION:
-                addFragment(TransactionFragment.newInstance(uid),true);
+                if(uid.equals(CurrentUserData.getInstance().getUid()))
+                    Toast.makeText(getActivity(),"Daily Expense Feature Will be added soon",Toast.LENGTH_LONG).show();
+                else addFragment(TransactionFragment.newInstance(uid,null),true);
                 break;
 
         }
@@ -98,8 +115,4 @@ public class UserListFragment extends BaseFragment implements UserListListner {
 
     }
 
-    @Override
-    public void onChatReferenceChange(List<ChatReference> options) {
-
-    }
 }

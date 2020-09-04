@@ -37,8 +37,7 @@ public class SplashViewModel extends AndroidViewModel implements ISplashRepoCall
 
     @Override
     public void onSuccess(User user) {
-        CurrentUserData.getInstance().setUser(user);
-        callback.onSuccess();
+        callback.onSuccess(user);
     }
 
     @Override

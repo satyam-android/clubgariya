@@ -60,11 +60,11 @@ public class ChatReferenceAdapter extends FirestoreRecyclerAdapter<ChatReference
     @Override
     protected void onBindViewHolder(@NonNull ChatReferenceViewHolder holder, int position, @NonNull ChatReference model) {
 
-        if(!TextUtils.isEmpty(model.getPartner_profile_image()))
-        setImageFromUrl(model.getPartner_profile_image(),holder.ivProfile);
+//        if(!TextUtils.isEmpty(model.getPartner_profile_image()))
+//        setImageFromUrl(model.getPartner_profile_image(),holder.ivProfile);
         holder.tvMobile.setText("Mobile");
         holder.tvLastMessage.setText(model.getLastMessage());
-        holder.tvName.setText(model.getPartnerName());
+//        holder.tvName.setText(model.getPartnerName());
         holder.layoutRow.setOnClickListener((view)->{
             new Thread(new Runnable() {
                 @Override

@@ -6,9 +6,6 @@ import com.satyam.clubgariya.modals.TransactionReference;
 import java.util.List;
 
 public interface IBaseFragmentListner {
-    void onProfileUpdate();
-    void onChatReferenceChange(List<ChatReference> options);
-    void onTransactionReferenceChange(List<TransactionReference> transactionReferences);
 
 
 }

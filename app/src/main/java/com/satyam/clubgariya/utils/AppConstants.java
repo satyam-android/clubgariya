@@ -12,6 +12,7 @@ public class AppConstants {
 
     public static String CURRENT_CHAT_ID = "";
     public static String CURRENT_TRANSACTION_ID = "";
+    public static String USER_COUNTRY_CODE = "county_code";
 
 
     public static String VIEW_STACK = "current_stack";
@@ -19,6 +20,10 @@ public class AppConstants {
     public static final String VIEW_STACK_TRANSACTION_MESSAGE = "TRANSACTION_MESSAGE";
     public static final String VIEW_STACK_MESSAGE = "MESSAGE";
     public static final String VIEW_STACK_TRANSACTION = "TRANSACTION";
+
+    //Notification Channel
+    public static final String NOTIFICATION_CHANNEL_MESSAGE = "message";
+    public static final String NOTIFICATION_CHANNEL_TRANSACTION = "transaction";
 
 
     // FireBase Constants
@@ -31,7 +36,7 @@ public class AppConstants {
     public static String USER_TRANSACTION_REFERENCES_COLLECTION_NODE = "TransactionReferences";
     public static String USER_CHAT_SUB_REFERENCES_COLLECTION_NODE = "ChatSubReferences";
     public static String USER_TRANSACTION_SUB_REFERENCES_COLLECTION_NODE = "TransactionSubReferences";
-    public static String USER_CHAT_COLLECTION_NODE = "ChatReferences";
+    public static String CHAT_REFERENCE_COLLECTION_NODE = "ChatReferences";
     public static String CHAT_COLLECTION_NODE = "Chats";
     public static String TRANSACTION_COLLECTION_NODE = "Transactions";
     public static String CHAT_SUB_COLLECTION_NODE = "ChatArray";
@@ -40,6 +45,7 @@ public class AppConstants {
     public static String COMMENT_ALL_BLOG_NODE = "BlogComments";
     public static String USERS_CLUB_CONTACTS_COLLECTION = "UserClubContacts";
     public static String USERS_RAW_CONTACTS_COLLECTION = "UserRawContacts";
+    public static String USERS_SUB_CONTACTS_COLLECTION = "Contacts";
     public static String CONTACTS_COLLECTION_CLUB_MASTER = "MasterContacts";
 
 
@@ -84,8 +90,32 @@ public class AppConstants {
 
 
     // User List source
-    public static final String USER_LIST_FOR_CHAT="ChatFragment";
-    public static final String USER_LIST_FOR_TRANSACTION="TransactionFragment";
+    public static final String USER_LIST_FOR_CHAT = "ChatFragment";
+    public static final String USER_LIST_FOR_TRANSACTION = "TransactionFragment";
+
+    public static final String USER_BUSINESS_TYPE_DEFAULT = "NO_BUSINESS";
+
+    public static final String USER_ROLE_MEMBER = "MEMBER";
+    public static final String USER_ROLE_ADMIN = "ADMIN";
+    public static String USER_PROFILE_STATUS_DEFAULT = "Active";
+
+    public static final String USER_TYPE_INDIVIDUAL = "INDIVIDUAL";
+    public static final String USER_TYPE_GROUP = "GROUP";
+    public static final String NOTIFICATION_TYPE_TRANSACTION_INITIATED = "TRANSACTION_INITIATED";
+    public static final String NOTIFICATION_TYPE_TRANSACTION_CONFIRM = "TRANSACTION_CONFIRM";
+    public static final String NOTIFICATION_TYPE_TRANSACTION_DISPUTE = "TRANSACTION_DISPUTE";
+
+    public static final String NOTIFICATION_TYPE_MESSAGE_INITIATED = "MESSAGE_INITIATED";
+    public static final String REFERENCE_TYPE_INDIVIDUAL = "INITIATED";
+    public static final String REFERENCE_TYPE_GROUP = "GROUP";
+
+
+    // TAG CHAT REFERENCE
+    public static final String CHAT_REFERENCE_TAG_ALLOWED_USERS="allowedUsers";
+    public static final String USER_CHAT_GROUP_TAG_="chatGroups";
+    public static final String USER_TRANSACTION_GROUP_TAG_="transactionGroups";
+
+
 
 
 }

@@ -26,6 +26,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -34,17 +37,22 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.satyam.clubgariya.R;
+import com.satyam.clubgariya.callbacks.MainActivityListners;
 import com.satyam.clubgariya.database.AppDatabase;
 import com.satyam.clubgariya.databinding.ActivityMainBinding;
 import com.satyam.clubgariya.helper.CurrentUserData;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
 import com.satyam.clubgariya.database.tables.User;
+import com.satyam.clubgariya.utils.AppConstants;
+import com.satyam.clubgariya.utils.AppDatabaseHelper;
+import com.satyam.clubgariya.utils.AppSharedPreference;
 import com.satyam.clubgariya.utils.UtilFunction;
+import com.satyam.clubgariya.viewmodels.MainActivityViewModel;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener, MainActivityListners {
     private static final String TAG = "MainActivity";
     ConstraintLayout rlAppBar;
     SimpleDraweeView ivProfilePicture;
@@ -55,26 +63,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FragmentManager fragmentManager;
     FragmentTransaction ft;
     RelativeLayout progressBarContainer;
-    TextView tvProgressTitle;
     Fragment currentFragment;
     private ActivityMainBinding binding;
     private int exitBackCount;
+    private MainActivityViewModel mViewModel;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // remove title
+        Log.e(TAG, "onCreate: ");
         requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
         getSupportActionBar().hide(); //hide the title bar
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        mViewModel.setListner(this);
 //        setContentView(R.layout.activity_main);
         rlAppBar = findViewById(R.id.app_bar);
         ivProfilePicture = findViewById(R.id.iv_profile_image);
         ivLogout = findViewById(R.id.iv_logout);
         tvTitleAppBar = findViewById(R.id.tv_app_title);
         progressBarContainer = findViewById(R.id.rl_progress_bar_container);
-        tvProgressTitle = findViewById(R.id.tv_progress_title);
         ivOptionMenu = findViewById(R.id.iv_option_menu);
         ivOptionMenu.setOnClickListener(this);
         ivProfilePicture.setOnClickListener(this);
@@ -83,8 +93,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (savedInstanceState == null) {
             addFragment(SplashFragment.getInstance(), false);
         }
-  }
+    }
 
+    public void setProgressbarProgress(int progress) {
+        binding.progressbar.setProgress(progress);
+    }
+
+    public void startListeningToDataChange(String uid) {
+        if (!TextUtils.isEmpty(uid))
+            mViewModel.listenToUserDetailChange(uid);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -101,20 +119,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void updateUserNetWorth() {
-        if (currentFragment instanceof TransactionUserListFragment || currentFragment instanceof TransactionFragment) {
-            binding.ivCurrencyIcon.setVisibility(View.VISIBLE);
-            binding.ivCurrencyIcon.setText(UtilFunction.getInstance().getLocalCurrencySymbol());
-            binding.tvNetworth.setVisibility(View.VISIBLE);
+        if (CurrentUserData.getInstance().getUser() != null) {
+            binding.ivCurrencyIcon.setText(UtilFunction.getInstance().getLocalCurrencySymbol(getApplication()));
             double netWorth = CurrentUserData.getInstance().getNet_Worth();
             if (netWorth > 0) {
-                binding.tvNetworth.setTextColor(Color.GREEN);
-            } else {
                 binding.tvNetworth.setTextColor(Color.RED);
+            } else {
+                binding.tvNetworth.setTextColor(Color.GREEN);
             }
-            binding.tvNetworth.setText(String.valueOf(netWorth));
+            binding.tvNetworth.setText(String.valueOf(Math.abs(netWorth)));
+            if (currentFragment instanceof TransactionUserListFragment || currentFragment instanceof TransactionFragment) {
+                binding.ivCurrencyIcon.setVisibility(View.VISIBLE);
+                binding.tvNetworth.setVisibility(View.VISIBLE);
+            } else {
+                binding.ivCurrencyIcon.setVisibility(View.GONE);
+                binding.tvNetworth.setVisibility(View.GONE);
+            }
         } else {
-            binding.ivCurrencyIcon.setVisibility(View.GONE);
-            binding.tvNetworth.setVisibility(View.GONE);
+
         }
     }
 
@@ -131,8 +153,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        Log.e(TAG, "onResume: ");
         if (FirebaseObjectHandler.getInstance().getFirebaseAuth().getCurrentUser() != null)
             implementUserProfileChange();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG, "onDestroy: ");
     }
 
     public void implementUserProfileChange() {
@@ -145,8 +174,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 if (snapshot != null && snapshot.exists()) {
-                    CurrentUserData.getInstance().setUser(snapshot.toObject(User.class));
-                    ivProfilePicture.setImageURI(Uri.parse(CurrentUserData.getInstance().getUserImageUrl()));
+                    try {
+                        Log.e(TAG, "User Profile Changed: " );
+                        User user=snapshot.toObject(User.class);
+                        user.setUid(snapshot.getId());
+                        onUserDataChange(user);
+
+                    }catch (Exception e1){
+                        e1.printStackTrace();
+                        Log.e(TAG, "onEvent: "+e1.getLocalizedMessage() );
+                    }
+//                    if(!TextUtils.isEmpty(CurrentUserData.getInstance().getUserImageUrl()))
+//                    ivProfilePicture.setImageURI(Uri.parse(CurrentUserData.getInstance().getUserImageUrl()));
 //                    FirebaseObjectHandler.getInstance().setImageFromUrl(CurrentUserData.getInstance().getUserImageUrl(), ivProfilePicture);
                 } else {
                     Log.d(TAG, "Current data: null");
@@ -173,20 +212,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void showGlobalProgressBar(String progressTitle) {
         progressBarContainer.setVisibility(View.VISIBLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        if (TextUtils.isEmpty(progressTitle)) {
-            tvProgressTitle.setVisibility(View.GONE);
-        } else {
-            tvProgressTitle.setVisibility(View.VISIBLE);
-            tvProgressTitle.setText(progressTitle);
-        }
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     public void hideGlobalProgressBar() {
-
+        progressBarContainer.setVisibility(View.GONE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        progressBarContainer.setVisibility(View.INVISIBLE);
     }
 
     public void showAppBar(String title) {
@@ -202,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 showOptionMenu(view);
                 break;
             case R.id.iv_profile_image:
-                addFragment(UserProfileFragment.newInstance(), true);
+                addFragment(UserProfileFragment.newInstance(CurrentUserData.getInstance().getUser()), true);
                 break;
 
             case R.id.iv_logout:
@@ -225,8 +256,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             popup.inflate(R.menu.popup_menu_blog);
         } else if (currentFragment instanceof ChatUserListFragment) {
             popup.inflate(R.menu.popup_menu_chat);
-        } else if (currentFragment instanceof EventFragment) {
-            popup.inflate(R.menu.popup_menu_chat);
+        } else if (currentFragment instanceof TransactionUserListFragment) {
+            popup.inflate(R.menu.popup_menu_transaction);
         }
         popup.show();
     }
@@ -242,6 +273,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ft.add(R.id.container, fragment);
         if (addToBackStack)
             ft.addToBackStack(fragment.getClass().getName());
+        else ft.addToBackStack(null);
         ft.commit();
 //        for(int i=0;i<fragmentManager.getBackStackEntryCount();i++){
 //            Log.e(TAG, "after add commit: "+fragmentManager.getFragments().get(i).getClass().getName() );
@@ -282,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             return;
         }
-        if(fragmentManager.getFragments().size()==2){
+        if (fragmentManager.getFragments().size() == 2) {
             exitBackCount++;
             if (exitBackCount > 1) {
                 super.onBackPressed();
@@ -318,20 +350,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ViewUtils.showToast("Last Fragment",this);
         }*/
 
-}
+    }
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         Toast.makeText(getBaseContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
         switch (item.getItemId()) {
+            case R.id.profile_settings:
+                addFragment(UserProfileFragment.newInstance(CurrentUserData.getInstance().getUser()), true);
+                return true;
             case R.id.app_settings:
                 replaceFragment(AppSettingsFragment.getInstance());
                 return true;
-            case R.id.message_search:
-                replaceFragment(SearchMessageFragment.newInstance());
+            case R.id.create_transaction_group:
+                addFragment(UserListGroupFragment.newInstance(AppConstants.USER_LIST_FOR_TRANSACTION), true);
+                return true;
+            case R.id.create_chat_group:
+                addFragment(UserListGroupFragment.newInstance(AppConstants.USER_LIST_FOR_CHAT), true);
                 return true;
             case R.id.app_contact_sync:
                 if (checkReadContactPermission()) {
+                    new AppSharedPreference(getApplicationContext()).setStringData(AppConstants.DATABASE_CONTACT_SYNC_DATE,"");
                     UtilFunction.getInstance().startContactSyncAdapter(getBaseContext());
                 }
                 return true;
@@ -342,4 +381,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    @Override
+    public void onUserDataChange(User user) {
+        if (user != null) {
+            if(!TextUtils.isEmpty(user.getImageUrl()))
+            binding.ivProfileImage.setImageURI(user.getImageUrl());
+            AppDatabaseHelper.getInstance(getApplication()).getUserByUid(user.getUid(), new AppDatabaseHelper.GetUserDetail() {
+                @Override
+                public void onUserSuccess(User userLocal) {
+                    if(userLocal!=null && !TextUtils.isEmpty(userLocal.getName()))
+                        user.setName(userLocal.getName());
+                    CurrentUserData.getInstance().setUser(user);
+                    updateUserNetWorth();
+
+                }
+            });
+
+        /*    AppDatabase.getInstance(getApplicationContext()).userDao().getNameByMobile(CurrentUserData.getInstance().getUserMobile()).observe(this, new Observer<String>() {
+                @Override
+                public void onChanged(String s) {
+                    if (!TextUtils.isEmpty(s))
+                        user.setName(s);
+                    Log.e(TAG, "onChanged: "+s );
+                    CurrentUserData.getInstance().setUser(user);
+                    updateUserNetWorth();
+                }
+            });*/
+        }
+    }
 }

@@ -22,7 +22,10 @@ import com.satyam.clubgariya.callbacks.RegisterViewModelListner;
 import com.satyam.clubgariya.helper.CurrentUserData;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
 import com.satyam.clubgariya.database.tables.User;
+import com.satyam.clubgariya.utils.AppConstants;
 import com.satyam.clubgariya.utils.DateTimeUtilityFunctions;
+
+import java.util.ArrayList;
 
 public class RegisterFragViewModal extends AndroidViewModel {
     private static final String TAG = "RegisterFragViewModal";
@@ -122,12 +125,11 @@ public class RegisterFragViewModal extends AndroidViewModel {
 
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
-                        User user =new User(name,"","",email,mobileNumber,uid,"", DateTimeUtilityFunctions.getInstance().getCurrentTime(),0.0,0.0,token,false);
-                        CurrentUserData.getInstance().setUser(user);
+                        User user =new User(name,"Using OneCLick is such a fun", AppConstants.DATABASE_CONTACT_STATUS_DEFAULT,email,AppConstants.USER_TYPE_INDIVIDUAL,AppConstants.USER_BUSINESS_TYPE_DEFAULT,mobileNumber,uid,"", DateTimeUtilityFunctions.getInstance().getCurrentTime(),0.0,0.0,token,false,new ArrayList<>(),new ArrayList<>());
                         FirebaseObjectHandler.getInstance().getUserDocumentReference(uid).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                listner.onRegisterSuccess();
+                                listner.onRegisterSuccess(user);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override

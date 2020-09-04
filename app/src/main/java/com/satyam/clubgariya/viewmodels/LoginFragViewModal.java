@@ -94,14 +94,12 @@ public class LoginFragViewModal extends AndroidViewModel implements ILoginReposi
     @Override
     public void onAuthSuccess() {
         showProgress.setValue(false);
-        loginViewModalListner.onAuthSuccess();
     }
 
     @Override
     public void onUserDataSuccess(User user) {
-        CurrentUserData.getInstance().setUser(user);
         showProgress.setValue(false);
-        loginViewModalListner.onAuthSuccess();
+        loginViewModalListner.onAuthSuccess(user);
     }
 
     @Override

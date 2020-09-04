@@ -4,6 +4,8 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.util.List;
+
 @Entity(tableName = "Users", indices = @Index(value = {"mobile"}, unique = true))
 public class User {
     @PrimaryKey(autoGenerate = true)
@@ -13,9 +15,13 @@ public class User {
     public String email;
     public String mobile;
     public String uid;
-    public String creationTime;
+    public String userType;
+    public List<String> chatGroups;
+    public List<String> transactionGroups;
+    public String userBusiness;
+    public long creationTime;
     public String fcm_token;
-    public String status;
+    public String userStatus;
     public String profileStatus;
     public double totalCredit;
     public double totalDebit;
@@ -24,19 +30,55 @@ public class User {
     public User() {
     }
 
-    public User(String name, String status, String profileStatus, String email, String mobile, String uid, String imageUrl, String creationTime, double totalCredit, double totalDebit, String fcm_token, boolean isClubMember) {
+    public User(String name, String userStatus, String profileStatus, String email,String userType, String userBusiness,String mobile, String uid, String imageUrl, long creationTime, double totalCredit, double totalDebit, String fcm_token, boolean isClubMember,List<String> chatGroups,List<String> transactionGroups) {
         this.imageUrl = imageUrl;
         this.name = name;
-        this.status = status;
+        this.userStatus = userStatus;
+        this.chatGroups=chatGroups;
+        this.transactionGroups=transactionGroups;
+        this.userType=userType;
         this.profileStatus = profileStatus;
         this.clubMember = isClubMember;
         this.email = email;
+        this.userBusiness=userBusiness;
         this.mobile = mobile;
         this.uid = uid;
         this.creationTime = creationTime;
         this.fcm_token = fcm_token;
         this.totalCredit = totalCredit;
         this.totalDebit = totalDebit;
+    }
+
+    public List<String> getTransactionGroups() {
+        return transactionGroups;
+    }
+
+    public void setTransactionGroups(List<String> transactionGroups) {
+        this.transactionGroups = transactionGroups;
+    }
+
+    public List<String> getChatGroups() {
+        return chatGroups;
+    }
+
+    public void setChatGroups(List<String> chatGroups) {
+        this.chatGroups = chatGroups;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getUserBusiness() {
+        return userBusiness;
+    }
+
+    public void setUserBusiness(String userBusiness) {
+        this.userBusiness = userBusiness;
     }
 
     public String getProfileStatus() {
@@ -55,12 +97,12 @@ public class User {
         this.clubMember = clubMember;
     }
 
-    public String getStatus() {
-        return status;
+    public String getUserStatus() {
+        return userStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setUserStatus(String userStatus) {
+        this.userStatus = userStatus;
     }
 
     public double getTotalCredit() {
@@ -87,11 +129,11 @@ public class User {
         this.fcm_token = fcm_token;
     }
 
-    public String getCreationTime() {
+    public long getCreationTime() {
         return creationTime;
     }
 
-    public void setCreationTime(String creationTime) {
+    public void setCreationTime(long creationTime) {
         this.creationTime = creationTime;
     }
 

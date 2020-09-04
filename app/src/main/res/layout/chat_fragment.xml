@@ -59,10 +59,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
             app:layout_constraintTop_toBottomOf="@id/layout_header_user_detail"
-            android:id="@+id/tv_same_user_message"
+            android:id="@+id/tv_note_message"
             android:textSize="15sp"
             android:padding="5dp"
-            android:text="Great Sending Message to yourself, Its a nice way to keep note"
+            android:visibility="gone"
+            android:gravity="center"
+            android:text="Note"
+            android:textStyle="italic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <androidx.recyclerview.widget.RecyclerView
@@ -72,7 +75,7 @@
             android:background="#EDEAEA"
             android:nestedScrollingEnabled="false"
             app:stackFromEnd="true"
-            app:layout_constraintTop_toBottomOf="@id/tv_same_user_message"
+            app:layout_constraintTop_toBottomOf="@id/tv_note_message"
             app:layout_constraintBottom_toTopOf="@id/layout_footer_send_message"
             />
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,18 +101,21 @@
                 android:layout_height="wrap_content"/>
             <Button
                 android:id="@+id/btn_send_chat_msg"
-                android:layout_width="50dp"
+                android:layout_width="@dimen/small_icon_width"
                 android:background="@drawable/ic_send_icon"
-                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="@dimen/small_icon_height"
                 app:layout_constraintBottom_toBottomOf="@id/et_send_message"
                 app:layout_constraintEnd_toEndOf="parent"
                 />
             <Button
                 android:id="@+id/btn_send_media"
-                android:layout_width="50dp"
-                android:background="@android:drawable/ic_menu_camera"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/small_icon_width"
+                android:background="@drawable/icon_attachment"
+                android:layout_height="@dimen/small_icon_height"
                 android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
                 app:layout_constraintBottom_toBottomOf="@id/et_send_message"
                 app:layout_constraintEnd_toStartOf="@+id/btn_send_chat_msg"

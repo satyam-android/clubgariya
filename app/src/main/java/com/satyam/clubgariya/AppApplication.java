@@ -10,6 +10,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.core.ImageTranscoderType;
 import com.facebook.imagepipeline.core.MemoryChunkType;
+import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 
 public class AppApplication extends Application {
 
@@ -26,6 +27,9 @@ public class AppApplication extends Application {
                 .setMemoryChunkType(MemoryChunkType.BUFFER_MEMORY)
                 .setImageTranscoderType(ImageTranscoderType.JAVA_TRANSCODER)
                 .experiment().setNativeCodeDisabled(true)
+                .setProgressiveJpegConfig(new SimpleProgressiveJpegConfig())
+                .setResizeAndRotateEnabledForNetwork(true)
+                .setDownsampleEnabled(true)
                 .build();
         Fresco.initialize(getApplicationContext(),config);
         // OneSignal Initialization

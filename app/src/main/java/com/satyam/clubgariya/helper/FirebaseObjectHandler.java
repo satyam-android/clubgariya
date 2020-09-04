@@ -85,6 +85,18 @@ public class FirebaseObjectHandler {
         return collectionReference;
     }
 
+    public CollectionReference getChatReferenceCollection() {
+        collectionReference = firebaseFirestore.collection(AppConstants.CHAT_REFERENCE_COLLECTION_NODE);
+
+        return collectionReference;
+    }
+
+    public CollectionReference getTransactionReferenceCollection() {
+        collectionReference = firebaseFirestore.collection(AppConstants.USER_TRANSACTION_REFERENCES_COLLECTION_NODE);
+
+        return collectionReference;
+    }
+
     public CollectionReference getChatCollection(String chatId) {
         collectionReference = firebaseFirestore.collection(AppConstants.CHAT_COLLECTION_NODE).document(chatId).collection(AppConstants.CHAT_SUB_COLLECTION_NODE);
 
@@ -105,8 +117,8 @@ public class FirebaseObjectHandler {
         return getCollectionReference(AppConstants.USER_CHAT_REFERENCES_COLLECTION_NODE).document(userId).collection(AppConstants.USER_CHAT_SUB_REFERENCES_COLLECTION_NODE);
     }
 
-    public CollectionReference getUserTransactionCollectionReference(String userId){
-        return getCollectionReference(AppConstants.USER_TRANSACTION_REFERENCES_COLLECTION_NODE).document(userId).collection(AppConstants.USER_TRANSACTION_SUB_REFERENCES_COLLECTION_NODE);
+    public CollectionReference getUserTransactionCollectionReference(){
+        return getCollectionReference(AppConstants.USER_TRANSACTION_REFERENCES_COLLECTION_NODE);
     }
 
     public DocumentReference getAppSettingsDocumentReference() {
@@ -117,6 +129,12 @@ public class FirebaseObjectHandler {
     public DocumentReference getUserRawContactReference(String node) {
         documentReference = getUsersRawContactsCollection().document(node);
         return documentReference;
+    }
+
+    public CollectionReference getUserContactSubCollection(String documentID){
+        collectionReference = firebaseFirestore.collection(AppConstants.USERS_RAW_CONTACTS_COLLECTION).document(documentID).collection(AppConstants.USERS_SUB_CONTACTS_COLLECTION);
+
+        return collectionReference;
     }
 
     public DocumentReference getUserDocumentReference(String node) {
@@ -134,28 +152,6 @@ public class FirebaseObjectHandler {
         return documentReference;
     }
 
-    public void setImageFromUrl(String imageUrl, SimpleDraweeView imageView){
-        storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
-        storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    imageView.setImageURI(task.getResult());
-//                    requestManager.load(task.getResult()).diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(imageView);
-                    Log.e(TAG, "onComplete: " );
 
-                } else {
-//                    requestManager.load(context.getDrawable(R.drawable.icon_loop)).into(imageView);
-
-                }
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-    }
 
 }

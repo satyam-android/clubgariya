@@ -15,7 +15,10 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.callbacks.LoginViewModalListner;
+import com.satyam.clubgariya.database.AppDatabase;
+import com.satyam.clubgariya.database.tables.User;
 import com.satyam.clubgariya.databinding.FragmentLoginBinding;
+import com.satyam.clubgariya.helper.CurrentUserData;
 import com.satyam.clubgariya.modals.LoginError;
 import com.satyam.clubgariya.utils.ViewUtils;
 import com.satyam.clubgariya.viewmodels.LoginFragViewModal;
@@ -88,7 +91,10 @@ public class LoginFragment extends BaseFragment implements LoginViewModalListner
     }
 
     @Override
-    public void onAuthSuccess() {
+    public void onAuthSuccess(User user) {
+        if (user != null) {
+            setUserData(user);
+        }
         replaceFragment(HomeFragment.getInstance(),false);
 
     }

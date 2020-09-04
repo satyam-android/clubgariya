@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/message_settings"
-        android:title="Chat Settings" />
+    <item android:id="@+id/profile_settings"
+        android:title="Profile" />
     <item android:id="@+id/app_contact_sync"
         android:title="Sync Contact" />
-    <item android:id="@+id/message_search"
-        android:title="Search" />
+    <item android:id="@+id/create_chat_group"
+        android:title="Create Group" />
     <item android:id="@+id/create_room"
         android:title="Create Room" />
     <item android:id="@+id/app_settings"

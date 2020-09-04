@@ -13,25 +13,25 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.satyam.clubgariya.callbacks.IBaseFragmentListner;
+import com.satyam.clubgariya.helper.CurrentUserData;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
 import com.satyam.clubgariya.modals.ChatReference;
 import com.satyam.clubgariya.modals.TransactionReference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BaseFragmentViewModel extends AndroidViewModel {
     private static final String TAG = "BaseFragmentViewModel";
     private IBaseFragmentListner listner;
-    private List<ChatReference> references;
-    private List<TransactionReference> referencesTrans;
 
     public BaseFragmentViewModel(@NonNull Application application) {
         super(application);
 
         if (FirebaseObjectHandler.getInstance().getFirebaseAuth().getCurrentUser() != null) {
-            registerChatReferenceChange();
-            registerTransactionReferenceChange();
+//            registerChatReferenceChange();
+//            registerTransactionReferenceChange();
         }
     }
 
@@ -42,27 +42,9 @@ public class BaseFragmentViewModel extends AndroidViewModel {
 
 
 
-    public void registerChatReferenceChange() {
-        FirebaseObjectHandler.getInstance().getUserChatCollectionReference(FirebaseObjectHandler.getInstance().getFirebaseAuth().getUid()).orderBy("lastMessageTime", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w(TAG, "Listen failed.", e);
-                    return;
-                }
-                references = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    ChatReference chatReference = doc.toObject(ChatReference.class);
-                    Log.e(TAG, "CHat References: "+chatReference.getLastMessage() );
-                    references.add(chatReference);
-                }
-                listner.onChatReferenceChange(references);
-            }
-        });
-    }
 
     public void registerTransactionReferenceChange() {
-        FirebaseObjectHandler.getInstance().getUserTransactionCollectionReference(FirebaseObjectHandler.getInstance().getFirebaseAuth().getUid()).orderBy("lastMessageTime", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+   /*     FirebaseObjectHandler.getInstance().getUserTransactionCollectionReference(FirebaseObjectHandler.getInstance().getFirebaseAuth().getUid()).orderBy("lastMessageTime", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
@@ -75,9 +57,9 @@ public class BaseFragmentViewModel extends AndroidViewModel {
 //                    Log.e(TAG, "Trans References: "+ref.getUserName() );
                     referencesTrans.add(ref);
                 }
-                listner.onTransactionReferenceChange(referencesTrans);
+             //   listner.onTransactionReferenceChange(referencesTrans);
 
             }
-        });
+        });*/
     }
 }

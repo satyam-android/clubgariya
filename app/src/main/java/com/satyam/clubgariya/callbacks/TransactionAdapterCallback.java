@@ -7,7 +7,8 @@ public interface TransactionAdapterCallback {
     void currentItemCount(int count);
     void renderingBottomItem(int count);
     void itemCLick(Transaction transaction);
-    void updateTransaction(Transaction transaction);
+    void updateTransactionAccept(Transaction transaction);
+    void updateTransactionDispute(Transaction transaction);
     void itemImageListClick(Transaction transaction);
     void itemLongClick(Transaction transaction);
 }

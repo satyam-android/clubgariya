@@ -21,9 +21,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.satyam.clubgariya.R;
+import com.satyam.clubgariya.callbacks.ChatReferenceListFragmentListner;
 import com.satyam.clubgariya.callbacks.UserListListner;
+import com.satyam.clubgariya.database.tables.User;
+import com.satyam.clubgariya.helper.CurrentUserData;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
 import com.satyam.clubgariya.modals.ChatReference;
+import com.satyam.clubgariya.utils.AppConstants;
+import com.satyam.clubgariya.utils.AppDatabaseHelper;
 
 import java.util.List;
 
@@ -36,12 +41,12 @@ public class ChatReferenceAdapterNew extends RecyclerView.Adapter<ChatReferenceA
      * @param options
      */
     private String uid;
-    private UserListListner callback;
+    private ChatReferenceListFragmentListner callback;
     private List<ChatReference> options;
     private Context context;
     private StorageReference storageReference;
 
-    public ChatReferenceAdapterNew(Context context, List<ChatReference> options, UserListListner callback) {
+    public ChatReferenceAdapterNew(Context context, List<ChatReference> options, ChatReferenceListFragmentListner callback) {
         this.options = options;
         uid = FirebaseObjectHandler.getInstance().getFirebaseAuth().getUid();
         this.callback = callback;
@@ -91,17 +96,40 @@ public class ChatReferenceAdapterNew extends RecyclerView.Adapter<ChatReferenceA
     @Override
     public void onBindViewHolder(@NonNull ChatReferenceViewHolder holder, int position) {
         ChatReference model = options.get(position);
-        if (!TextUtils.isEmpty(model.getPartner_profile_image()))
-            setImageFromUrl(model.getPartner_profile_image(), holder.ivProfile);
-        holder.tvMobile.setText("Mobile");
-        holder.tvLastMessage.setText(model.getLastMessage());
-        holder.tvName.setText(model.getPartnerName());
+        if (model != null && model.getUsers() != null) {
+            if(model.getReferenceType().equals(AppConstants.REFERENCE_TYPE_GROUP)){
+                Log.e(TAG, "onBindViewHolder:for Group"+model.getReferenceName() );
+                setProfileListView(holder, model.getReferenceName(), model.getLastMessage(), model.getProfileImage());
+                AppDatabaseHelper.getInstance(context).getUserByUid(model.getReferenceId(), new AppDatabaseHelper.GetUserDetail() {
+                    @Override
+                    public void onUserSuccess(User user) {
+                        setProfileListView(holder, user.getName(), model.getLastMessage(), user.getImageUrl());
+                    }
+                });
+            }else{
+                if (model.getUsers().get(0).getUserUid().equals(CurrentUserData.getInstance().getUid()))
+                    AppDatabaseHelper.getInstance(context).getUserByUid(model.getUsers().get(1).getUserUid(), new AppDatabaseHelper.GetUserDetail() {
+                        @Override
+                        public void onUserSuccess(User user) {
+                            setProfileListView(holder, user.getName(), model.getLastMessage(), user.getImageUrl());
+                        }
+                    });
+                else
+                    AppDatabaseHelper.getInstance(context).getUserByUid(model.getUsers().get(0).getUserUid(), new AppDatabaseHelper.GetUserDetail() {
+                        @Override
+                        public void onUserSuccess(User user) {
+                            setProfileListView(holder, user.getName(), model.getLastMessage(), user.getImageUrl());
+                        }
+                    });
+
+            }
+        }
         holder.layoutRow.setOnClickListener((view) -> {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
 //                    User user = UserDB.getInstance(context).userDao().getContactDetail(model.getMobileNumber());
-                    callback.onUserClick(model.getPartnerUid());
+                    callback.onUserClick(model);
                 }
             }).start();
         });
@@ -138,7 +166,9 @@ public class ChatReferenceAdapterNew extends RecyclerView.Adapter<ChatReferenceA
 
 
     private void setImageFromUrl(String imageUrl, SimpleDraweeView imageView) {
-        storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
+        Log.e(TAG, "setImageFromUrl: "+imageUrl );
+        imageView.setImageURI(imageUrl);
+    /*    storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
         storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
@@ -158,7 +188,17 @@ public class ChatReferenceAdapterNew extends RecyclerView.Adapter<ChatReferenceA
             public void onFailure(@NonNull Exception e) {
 
             }
-        });
+        });*/
+    }
+
+    public void setProfileListView(ChatReferenceViewHolder holder, String name, String lastMessage, String profileImage) {
+        if (!TextUtils.isEmpty(name))
+            holder.tvName.setText(name);
+        if (!TextUtils.isEmpty(lastMessage))
+            holder.tvLastMessage.setText(lastMessage);
+        if (!TextUtils.isEmpty(profileImage))
+            holder.ivProfile.setImageURI(profileImage);
+//            setImageFromUrl(profileImage, holder.ivProfile);
     }
 
 }

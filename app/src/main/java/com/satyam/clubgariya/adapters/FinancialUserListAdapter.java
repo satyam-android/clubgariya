@@ -1,7 +1,9 @@
 package com.satyam.clubgariya.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +16,19 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.satyam.clubgariya.R;
+import com.satyam.clubgariya.callbacks.TransactionReferenceListFragmentListner;
 import com.satyam.clubgariya.callbacks.UserListListner;
+import com.satyam.clubgariya.database.tables.User;
+import com.satyam.clubgariya.helper.CurrentUserData;
 import com.satyam.clubgariya.modals.TransactionReference;
+import com.satyam.clubgariya.utils.AppConstants;
+import com.satyam.clubgariya.utils.AppDatabaseHelper;
 import com.satyam.clubgariya.utils.UtilFunction;
 
 import java.util.ArrayList;
@@ -28,9 +40,9 @@ public class FinancialUserListAdapter extends RecyclerView.Adapter<FinancialUser
     private List<TransactionReference> appContacts;
     private List<TransactionReference> mOriginalValues;
     private List<TransactionReference> appContactsFilteredList;
-    private UserListListner userListListner;
+    private TransactionReferenceListFragmentListner userListListner;
 
-    public FinancialUserListAdapter(Context context, List<TransactionReference> appContacts, UserListListner userListListner) {
+    public FinancialUserListAdapter(Context context, List<TransactionReference> appContacts, TransactionReferenceListFragmentListner userListListner) {
         this.context = context;
         this.appContacts = appContacts;
         this.userListListner = userListListner;
@@ -47,17 +59,26 @@ public class FinancialUserListAdapter extends RecyclerView.Adapter<FinancialUser
 
     @Override
     public void onBindViewHolder(@NonNull UserListModel holder, final int position) {
-        holder.tvUserName.setText(appContacts.get(position).getPartnerName());
-        if(!TextUtils.isEmpty(appContacts.get(position).getUserProfile_image()))
-        holder.profileImage.setImageURI(appContacts.get(position).getUserProfile_image());
-//        holder.tvUserLastTransaction.setText(appContacts.get(position).getLastMessage());
-        UtilFunction.getInstance().getTransactionStatus(appContacts.get(position),holder.tvUserLastTransaction);
-        holder.layoutMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userListListner.onUserClick(appContacts.get(position).getPartnerUid());
-            }
-        });
+        TransactionReference transactionReference = appContacts.get(position);
+        if (transactionReference != null && transactionReference.getUsers() != null) {
+            String uidForDetail;
+            if(transactionReference.getReferenceType().equalsIgnoreCase(AppConstants.REFERENCE_TYPE_GROUP))
+                uidForDetail=transactionReference.getGroupUserId();
+            else if (transactionReference.getUsers().get(0).getUserUid().equals(CurrentUserData.getInstance().getUid()))
+                uidForDetail = transactionReference.getUsers().get(1).getUserUid();
+            else
+                uidForDetail = transactionReference.getUsers().get(0).getUserUid();
+            if (!TextUtils.isEmpty(uidForDetail))
+                AppDatabaseHelper.getInstance(context).getUserByUid(uidForDetail, new AppDatabaseHelper.GetUserDetail() {
+                    @Override
+                    public void onUserSuccess(User user) {
+                        setValueToRowView(holder, user.getName(),user.getUserStatus(), user.getImageUrl());
+                    }
+                });
+        }
+        UtilFunction.getInstance().getTransactionStatus(appContacts.get(position), holder.tvUserLastTransaction);
+
+        holder.layoutMain.setOnClickListener(view -> userListListner.onUserClick(appContacts.get(position)));
     }
 
     @Override
@@ -92,9 +113,15 @@ public class FinancialUserListAdapter extends RecyclerView.Adapter<FinancialUser
                     constraint = constraint.toString().toLowerCase();
                     for (int i = 0; i < mOriginalValues.size(); i++) {
                         TransactionReference data = mOriginalValues.get(i);
-                        if (data.getPartnerName().toLowerCase().contains(constraint.toString())) {
-                            appContactsFilteredList.add(data);
-                        }
+                   /*     if (data.getUsers().get(0).getUserUid().equals(CurrentUserData.getInstance().getUid())) {
+                            if (data.getUsers().get(1).getUserName().toLowerCase().contains(constraint.toString())) {
+                                appContactsFilteredList.add(data);
+                            }
+                        } else {
+                            if (data.getUsers().get(0).getUserName().toLowerCase().contains(constraint.toString())) {
+                                appContactsFilteredList.add(data);
+                            }
+                        }*/
                     }
                     // set the Filtered result to return
                     results.count = appContactsFilteredList.size();
@@ -130,5 +157,41 @@ public class FinancialUserListAdapter extends RecyclerView.Adapter<FinancialUser
     public void updateListValue(List<TransactionReference> appContacts) {
         this.appContacts = appContacts;
         notifyDataSetChanged();
+    }
+
+    private void setImageFromUrl(String imageUrl, SimpleDraweeView imageView) {
+        imageView.setImageURI(imageUrl);
+       /*  StorageReference storageReference;
+        storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
+        storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    imageView.setImageURI(task.getResult());
+//                    requestManager.load(task.getResult()).diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(imageView);
+                    Log.e(TAG, "onComplete: ");
+
+                } else {
+//                    requestManager.load(context.getDrawable(R.drawable.icon_loop)).into(imageView);
+
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });*/
+    }
+
+
+    public void setValueToRowView(UserListModel holder, String name, String status, String profileImage) {
+        if (!TextUtils.isEmpty(name))
+            holder.tvUserName.setText(name);
+        if (!TextUtils.isEmpty(status))
+            holder.tvUserLastTransaction.setText(status);
+        if (!TextUtils.isEmpty(profileImage)) ;
+        setImageFromUrl(profileImage, holder.profileImage);
     }
 }

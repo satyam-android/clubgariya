@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.satyam.clubgariya.callbacks.IBaseFragmentListner;
+import com.satyam.clubgariya.database.tables.User;
 import com.satyam.clubgariya.modals.ChatReference;
 import com.satyam.clubgariya.modals.TransactionReference;
 import com.satyam.clubgariya.viewmodels.BaseFragmentViewModel;
@@ -25,7 +27,6 @@ public abstract class BaseFragment extends Fragment implements IBaseFragmentList
 
     private static final String TAG = "BaseFragment";
     public static final String PROGRESS_UPDATE = "progress_update";
-    private MutableLiveData<List<ChatReference>> chatReferences;
     private MutableLiveData<List<TransactionReference>> transactionReferences;
 
     private BaseFragmentViewModel viewModel;
@@ -38,9 +39,9 @@ public abstract class BaseFragment extends Fragment implements IBaseFragmentList
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.e(TAG, "onViewCreated: " );
         viewModel = ViewModelProviders.of(this).get(BaseFragmentViewModel.class);
         viewModel.setFragmentListner(this);
-        chatReferences = new MutableLiveData<>();
         transactionReferences = new MutableLiveData<>();
         registerReceiver();
 
@@ -50,6 +51,7 @@ public abstract class BaseFragment extends Fragment implements IBaseFragmentList
     @Override
     public void onResume() {
         super.onResume();
+        Log.e(TAG, "onResume: " );
     }
 
     public void registerReceiver() {
@@ -63,30 +65,13 @@ public abstract class BaseFragment extends Fragment implements IBaseFragmentList
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.e(TAG, "onDestroy: " );
         if (getActivity() != null)
             getActivity().unregisterReceiver(mBroadcastReceiver);
     }
 
-    @Override
-    public void onChatReferenceChange(List<ChatReference> options) {
-        chatReferences.setValue(options);
 
-    }
 
-    public MutableLiveData<List<ChatReference>> getChatReferences() {
-
-        return chatReferences;
-    }
-
-    @Override
-    public void onTransactionReferenceChange(List<TransactionReference> transactionReferences) {
-        this.transactionReferences.setValue(transactionReferences);
-    }
-
-    public MutableLiveData<List<TransactionReference>> getTransactionReferences() {
-
-        return transactionReferences;
-    }
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -139,6 +124,11 @@ public abstract class BaseFragment extends Fragment implements IBaseFragmentList
         ((MainActivity) getActivity()).addFragment(fragment,addToBackStack);
     }
 
+    public void setUserData(User userData){
+        if (getActivity() != null)
+            ((MainActivity) getActivity()).onUserDataChange(userData);
+    }
+
     public void replaceFragment(Fragment fragment,boolean addToBackStack) {
         if (getActivity() != null)
             ((MainActivity) getActivity()).replaceFragment(fragment);
@@ -153,10 +143,6 @@ public abstract class BaseFragment extends Fragment implements IBaseFragmentList
     }
 
 
-    @Override
-    public void onProfileUpdate() {
-        if(getActivity()!=null)
-        ((MainActivity) getActivity()).updateUserNetWorth();
-    }
+
 
 }

@@ -40,8 +40,8 @@ public class DateTimeUtilityFunctions {
         return finalValue;
     }
 
-    public String getCurrentTime(){
-        return String.valueOf(System.currentTimeMillis());
+    public long getCurrentTime(){
+        return System.currentTimeMillis();
     }
 
     public String getDateTime(String dateTimeFormat){

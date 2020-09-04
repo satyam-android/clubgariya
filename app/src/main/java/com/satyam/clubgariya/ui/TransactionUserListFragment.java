@@ -14,16 +14,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.adapters.FinancialUserListAdapter;
+import com.satyam.clubgariya.callbacks.TransactionReferenceListFragmentListner;
 import com.satyam.clubgariya.callbacks.UserListListner;
 import com.satyam.clubgariya.databinding.FinancialUserListFragmentBinding;
 import com.satyam.clubgariya.modals.TransactionReference;
 import com.satyam.clubgariya.utils.AppConstants;
+import com.satyam.clubgariya.utils.UtilFunction;
 import com.satyam.clubgariya.viewmodels.FinancialUserListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionUserListFragment extends BaseFragment implements UserListListner {
+public class TransactionUserListFragment extends BaseFragment implements TransactionReferenceListFragmentListner {
     private static final String TAG = "FinancialUserListFragme";
     private FinancialUserListViewModel mViewModel;
     private FinancialUserListFragmentBinding binding;
@@ -44,6 +46,8 @@ public class TransactionUserListFragment extends BaseFragment implements UserLis
         shoAppBar(getString(R.string.app_name));
         binding.rcvUserTransactionList.setLayoutManager(new LinearLayoutManager(getContext()));
         financialUserListAdapter = new FinancialUserListAdapter(getContext(), transactionReferences, this);
+//        binding.btnNewTransaction.setText(UtilFunction.getInstance().getLocalCurrencySymbol());
+        binding.fbNewTransaction.setText(UtilFunction.getInstance().getLocalCurrencySymbol(getContext()));
         binding.fbNewTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,18 +62,19 @@ public class TransactionUserListFragment extends BaseFragment implements UserLis
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(FinancialUserListViewModel.class);
         mViewModel.setTransactionlistner(this);
+        mViewModel.listenToTransactionReferenceChange();
         binding.rcvUserTransactionList.setAdapter(financialUserListAdapter);
         getAllClubContacts();
         // TODO: Use the ViewModel
     }
 
     public void getAllClubContacts() {
-        getTransactionReferences().observe(getActivity(), new Observer<List<TransactionReference>>() {
+  /*      getTransactionReferences().observe(getActivity(), new Observer<List<TransactionReference>>() {
             @Override
             public void onChanged(List<TransactionReference> transactionReferences) {
                 financialUserListAdapter.updateListValue(transactionReferences);
             }
-        });
+        });*/
    /*     AppContactDB.getInstance(getContext()).appContactDao().getClubContactList(true).observe(getActivity(), new Observer<List<AppContact>>() {
             @Override
             public void onChanged(List<AppContact> appContacts) {
@@ -85,9 +90,9 @@ public class TransactionUserListFragment extends BaseFragment implements UserLis
     }
 
     @Override
-    public void onUserClick(String uid) {
+    public void onUserClick(TransactionReference transReference) {
 
-        addFragment(TransactionFragment.newInstance(uid),true);
+        addFragment(TransactionFragment.newInstance(null,transReference),true);
 
   /*      new Thread(new Runnable() {
             @Override
@@ -104,7 +109,6 @@ public class TransactionUserListFragment extends BaseFragment implements UserLis
 
     }
 
-    @Override
     public void onTransactionReferenceChange(List<TransactionReference> transactionReferences) {
         financialUserListAdapter.updateListValue(transactionReferences);
     }

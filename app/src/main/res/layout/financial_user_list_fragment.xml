@@ -22,14 +22,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fb_new_transaction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/app_bar"
+            android:layout_width="@dimen/medium_icon_width"
+            android:layout_height="@dimen/medium_icon_height"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
-            android:src="@drawable/icon_rupee"
+            android:textColor="@color/app_title_color"
+            android:gravity="center"
+            android:text="H"
+            android:backgroundTint="@color/app_bar"
+            android:textSize="15sp"
+            app:layout_anchorGravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

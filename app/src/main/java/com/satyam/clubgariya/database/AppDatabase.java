@@ -19,7 +19,7 @@ import com.satyam.clubgariya.database.tables.AppChatReference;
 import com.satyam.clubgariya.database.tables.User;
 import com.satyam.clubgariya.utils.AppDataConverter;
 
-@Database(entities = {User.class, AppChatReference.class, AppChat.class}, exportSchema = false, version = 7)
+@Database(entities = {User.class, AppChatReference.class, AppChat.class}, exportSchema = false, version = 12)
 @TypeConverters({AppDataConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 

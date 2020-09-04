@@ -41,6 +41,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.satyam.clubgariya.R;
 import com.satyam.clubgariya.callbacks.ISplashModelCallback;
+import com.satyam.clubgariya.database.tables.User;
 import com.satyam.clubgariya.databinding.FragmentSplashBinding;
 import com.satyam.clubgariya.helper.FirebaseObjectHandler;
 import com.satyam.clubgariya.utils.UtilFunction;
@@ -61,7 +62,7 @@ public class SplashFragment extends BaseFragment implements ISplashModelCallback
     private String splashHeader;
     private String splashDescription;
     private String splashClickText;
-    private String click_url="https://www.bitlooper.com";
+    private String click_url = "https://www.bitlooper.com";
     private SpannableString stringProductName;
 
     public static SplashFragment getInstance() {
@@ -97,7 +98,7 @@ public class SplashFragment extends BaseFragment implements ISplashModelCallback
         binding.layoutSplashContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(android.content.Intent.ACTION_VIEW);
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(click_url));
                 startActivity(intent);
             }
@@ -105,12 +106,12 @@ public class SplashFragment extends BaseFragment implements ISplashModelCallback
     }
 
 
-    public void setupSplashAdvertisement(){
+    public void setupSplashAdvertisement() {
         FirebaseObjectHandler.getInstance().getAppSettingsDocumentReference().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    Log.e(TAG, "onSuccess: Response " );
+                    Log.e(TAG, "onSuccess: Response ");
                     String imagePath = documentSnapshot.getString("splash_logo");
                     splashHeader = documentSnapshot.getString("splash_header");
                     splashDescription = documentSnapshot.getString("splash_description");
@@ -147,7 +148,6 @@ public class SplashFragment extends BaseFragment implements ISplashModelCallback
     }
 
 
-
     private void setupSplashAdvertisement(String imageUri) {
         binding.tvSplashHeader.setText(splashHeader);
         binding.tvSplashDescription.setText(splashDescription);
@@ -159,7 +159,7 @@ public class SplashFragment extends BaseFragment implements ISplashModelCallback
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                replaceFragment(HomeFragment.getInstance(),false);
+                replaceFragment(HomeFragment.getInstance(), false);
             }
         }, 4000);
     }
@@ -224,8 +224,7 @@ public class SplashFragment extends BaseFragment implements ISplashModelCallback
 
                 if (contactAccepted && cameraAccepted && phoneStateAccepted && writeAccepted) {
                     viewModel.getUserDetail();
-                }
-                else {
+                } else {
 //                    Snackbar.make(view, "Permission Denied, You cannot access location data and camera.", Snackbar.LENGTH_LONG).show();
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -260,8 +259,9 @@ public class SplashFragment extends BaseFragment implements ISplashModelCallback
 
 
     @Override
-    public void onSuccess() {
+    public void onSuccess(User user) {
         UtilFunction.getInstance().startContactSyncAdapter(getContext());
+        setUserData(user);
         setupSplashAdvertisement();
     }
 
@@ -271,7 +271,7 @@ public class SplashFragment extends BaseFragment implements ISplashModelCallback
             @Override
             public void run() {
                 UtilFunction.getInstance().startContactSyncAdapter(getContext());
-                addFragment(LoginMobileFragment.newInstance(),false);
+                addFragment(LoginMobileFragment.newInstance(), false);
             }
         }, 3000);
 

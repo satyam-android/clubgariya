@@ -86,7 +86,7 @@ public class SearchMessageFragment extends BaseFragment implements UserListListn
 
     @Override
     public void onUserClick(String uid) {
-        addFragment(ChatFragment.newInstance(uid),true);
+//        addFragment(ChatFragment.newInstance(uid),true);
     }
 
     @Override
@@ -94,7 +94,6 @@ public class SearchMessageFragment extends BaseFragment implements UserListListn
 
     }
 
-    @Override
     public void onChatReferenceChange(List<ChatReference> options) {
 
     }

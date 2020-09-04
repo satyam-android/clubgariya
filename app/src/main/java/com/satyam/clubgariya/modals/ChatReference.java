@@ -3,41 +3,88 @@ package com.satyam.clubgariya.modals;
 
 import com.google.firebase.firestore.Exclude;
 
-public class ChatReference {
-     @Exclude
-     String chatReferenceId;
-     String lastMessageTime;
-     String lastMessage;
-     String partnerName;
-     String partnerUid;
-     String partner_profile_image;
+import java.util.ArrayList;
+import java.util.List;
 
-    public ChatReference(){
+public class ChatReference {
+    @Exclude
+    String chatReferenceId;
+    long lastMessageTime;
+    String lastMessage;
+    List<ChatReferenceUser> users;
+    List<String> allowedUsers;
+    String referenceType;
+    String createdBy;
+    String referenceName;
+    String profileImage;
+    String referenceId;
+
+    public ChatReference() {
 
     }
 
-    public ChatReference(String chatReferenceId, String lastMessageTime, String lastMessage, String partnerName, String partnerUid, String partner_profile_image) {
-        this.chatReferenceId = chatReferenceId;
+    public ChatReference(String chatReferenceId,long lastMessageTime, String lastMessage,String referenceName,String createdBy,String referenceType,String profileImage,List<ChatReferenceUser> users, List<String> allowedUsers,String referenceId) {
         this.lastMessageTime = lastMessageTime;
         this.lastMessage = lastMessage;
-        this.partnerName=partnerName;
-        this.partnerUid=partnerUid;
-        this.partner_profile_image=partner_profile_image;
+        this.users = users;
+        this.chatReferenceId=chatReferenceId;
+        this.referenceName=referenceName;
+        this.profileImage=profileImage;
+        this.createdBy=createdBy;
+        this.allowedUsers = allowedUsers;
+        this.referenceType=referenceType;
+        this.referenceId=referenceId;
     }
 
-    public String getChatReferenceId() {
-        return chatReferenceId;
+    public String getReferenceId() {
+        return referenceId;
     }
 
-    public void setChatReferenceId(String chatReferenceId) {
-        this.chatReferenceId = chatReferenceId;
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
     }
 
-    public String getLastMessageTime() {
+    public void setAllowedUsers(List<String> allowedUsers) {
+        this.allowedUsers = allowedUsers;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getReferenceName() {
+        return referenceName;
+    }
+
+    public void setReferenceName(String referenceName) {
+        this.referenceName = referenceName;
+    }
+
+    public String getReferenceType() {
+        return referenceType;
+    }
+
+    public void setReferenceType(String referenceType) {
+        this.referenceType = referenceType;
+    }
+
+    public long getLastMessageTime() {
         return lastMessageTime;
     }
 
-    public void setLastMessageTime(String lastMessageTime) {
+    public void setLastMessageTime(long lastMessageTime) {
         this.lastMessageTime = lastMessageTime;
     }
 
@@ -49,27 +96,28 @@ public class ChatReference {
         this.lastMessage = lastMessage;
     }
 
-    public String getPartnerName() {
-        return partnerName;
+    public List<ChatReferenceUser> getUsers() {
+        return users;
     }
 
-    public void setPartnerName(String partnerName) {
-        this.partnerName = partnerName;
+    public void setUsers(List<ChatReferenceUser> users) {
+        this.users = users;
     }
 
-    public String getPartnerUid() {
-        return partnerUid;
+    public List<String> getAllowedUsers() {
+        return allowedUsers;
     }
 
-    public void setPartnerUid(String partnerUid) {
-        this.partnerUid = partnerUid;
+    public void setAllowedUserMobiles(List<String> allowedUsers) {
+        this.allowedUsers = allowedUsers;
     }
 
-    public String getPartner_profile_image() {
-        return partner_profile_image;
+    @Exclude
+    public String getChatReferenceId() {
+        return chatReferenceId;
     }
 
-    public void setPartner_profile_image(String partner_profile_image) {
-        this.partner_profile_image = partner_profile_image;
+    public void setChatReferenceId(String chatReferenceId) {
+        this.chatReferenceId = chatReferenceId;
     }
 }

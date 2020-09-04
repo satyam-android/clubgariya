@@ -45,7 +45,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
     @Override
     public void onBindViewHolder(@NonNull UserListModel holder, final int position) {
         holder.tvUserName.setText(appContacts.get(position).getName());
-        holder.tvUserLastChatMsg.setText(appContacts.get(position).getName() + " 1stchat");
+        holder.tvUserLastChatMsg.setText(appContacts.get(position).getMobile());
         holder.layoutMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
